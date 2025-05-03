@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps",
+  "compilerOptions": {
+    "deleteOutDir": true
+  },
+  "projects": {
+    "countries": {
+      "type": "application",
+      "root": "apps/countries",
+      "entryFile": "src/main",
+      "sourceRoot": "apps/countries/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/countries/tsconfig.build.json",
+        "assets": [
+          {
+            "include": "src/resources/**/*",
+            "watchAssets": true
+          }
+        ]
+      }
+    },
+    "indicators": {
+      "type": "application",
+      "root": "apps/indicators",
+      "entryFile": "src/main",
+      "sourceRoot": "apps/indicators/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/indicators/tsconfig.build.json",
+        "assets": [
+          {
+            "include": "src/resources/**/*",
+            "watchAssets": true
+          }
+        ]
+      }
+    }
+  }
+}

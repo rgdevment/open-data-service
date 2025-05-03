@@ -1,0 +1,46 @@
+# === Dependencias y outputs de build
+node_modules
+dist
+coverage
+.nyc_output
+apps/**/dist
+libs/**/dist
+
+# === Archivos de test (unit y e2e)
+**/*.spec.ts
+**/*.test.ts
+**/__tests__/
+test/
+tests/
+
+# === Logs
+*.log
+pnpm-debug.log
+.pnpm-debug.log
+
+# === Archivos de Docker y Compose (solo en dev)
+Dockerfile.dev
+docker-compose.dev.yml
+docker-compose.override.yml
+
+# === Configuración local y editores
+.env
+.env.*
+!.env.example
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# === Archivos temporales
+.temp
+.tmp
+*.swp
+*.bak
+*.old
+*.tmp
+*.backup
+
+# === Git
+.git
+.gitignore

@@ -1,0 +1,35 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+run_lint_staged() {
+  echo "🔍 Running lint-staged..."
+  pnpm exec lint-staged || {
+    echo "❌ lint-staged failed. Fix issues before committing."
+    exit 1
+  }
+}
+
+run_fallback_lint() {
+  echo "⚠️  lint-staged not available. Running full lint + format..."
+  pnpm lint:fix && pnpm format || {
+    echo "❌ Lint/format failed. Fix issues before committing."
+    exit 1
+  }
+}
+
+if command -v pnpm >/dev/null 2>&1; then
+  if pnpm exec lint-staged --help >/dev/null 2>&1; then
+    run_lint_staged
+  else
+    run_fallback_lint
+  fi
+elif command -v corepack >/dev/null 2>&1; then
+  echo "ℹ️  Using corepack fallback..."
+  corepack pnpm lint:fix && corepack pnpm format || {
+    echo "❌ Fallback lint/format failed."
+    exit 1
+  }
+else
+  echo "❌ pnpm not found. Please install it or ensure it's available in your PATH."
+  exit 1
+fi

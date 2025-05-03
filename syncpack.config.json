@@ -1,0 +1,56 @@
+{
+  "$schema": "https://unpkg.com/syncpack@latest/schema.json",
+  "source": ["apps/*/package.json", "package.json"],
+  "sortAz": true,
+  "versionGroups": [
+    {
+      "label": "NestJS Core",
+      "packages": [
+        "@nestjs/common",
+        "@nestjs/core",
+        "@nestjs/config",
+        "@nestjs/platform-express",
+        "@nestjs/terminus",
+        "@nestjs/typeorm"
+      ],
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    {
+      "label": "ORM + Database",
+      "packages": ["typeorm", "mysql2", "reflect-metadata"],
+      "dependencies": "*"
+    },
+    {
+      "label": "Monitoring",
+      "packages": ["prom-client"],
+      "dependencies": "*"
+    },
+    {
+      "label": "RxJS",
+      "packages": ["rxjs"],
+      "dependencies": "*"
+    },
+    {
+      "label": "TypeScript",
+      "packages": ["typescript", "ts-node", "ts-jest", "tsconfig-paths", "tsc-alias"],
+      "devDependencies": "*"
+    },
+    {
+      "label": "Testing",
+      "packages": ["jest", "@types/jest", "supertest", "@types/supertest"],
+      "devDependencies": "*"
+    },
+    {
+      "label": "Linting & Formatting",
+      "packages": [
+        "eslint",
+        "eslint-plugin-import",
+        "eslint-plugin-prettier",
+        "eslint-config-prettier",
+        "prettier"
+      ],
+      "devDependencies": "*"
+    }
+  ]
+}

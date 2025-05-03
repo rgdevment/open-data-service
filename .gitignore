@@ -1,0 +1,67 @@
+# ===========================
+# OS / Editor / Sistema
+# ===========================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+*.log
+
+.vscode/
+.idea/
+*.iml
+
+# ===========================
+# Node / NestJS / pnpm
+# ===========================
+node_modules/
+dist/
+coverage/
+.nyc_output/
+.pnpm-debug.log
+pnpm-debug.log
+
+apps/**/dist/
+apps/**/coverage/
+libs/**/dist/
+libs/**/coverage/
+
+# ===========================
+# Archivos temporales
+# ===========================
+.temp
+.tmp
+*.swp
+*.bak
+*.tmp
+*.backup
+*.old
+
+# ===========================
+# Dotenv (excepto ejemplo)
+# ===========================
+.env
+.env.*
+!.env.example
+
+# ===========================
+# Docker y DevOps
+# ===========================
+docker-compose.override.yml
+infrastructure/**/data/
+infrastructure/**/logs/
+
+# ===========================
+# Make / Build Artifacts
+# ===========================
+*.tar
+*.zip
+*.tgz
+
+# ===========================
+# PID / Reportes
+# ===========================
+pids/
+*.pid
+*.pid.lock
+report.*.json
+*.report.json

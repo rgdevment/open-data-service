@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmitOnError": true,
+    "removeComments": true,
+    "incremental": false
+  },
+  "exclude": ["test", "**/*.spec.ts", "**/*.test.ts", "**/*.e2e-spec.ts", "**/__tests__/**"]
+}
