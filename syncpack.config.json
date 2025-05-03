@@ -1,5 +1,4 @@
 {
-  "$schema": "https://unpkg.com/syncpack@latest/schema.json",
   "source": ["apps/*/package.json", "package.json"],
   "sortAz": true,
   "versionGroups": [

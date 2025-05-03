@@ -3,7 +3,7 @@
 # -----------------------
 FROM node:22-alpine AS builder
 
-ARG APP_PATH=apps
+ARG APP_PATH
 
 WORKDIR /repo
 
@@ -32,6 +32,8 @@ RUN pnpm build
 # STAGE 2: Runtime
 # -----------------------
 FROM node:22-alpine AS runner
+
+ARG APP_PATH
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
