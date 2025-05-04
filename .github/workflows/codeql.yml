@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: ['main']
   schedule:
-    - cron: '39 11 * * 5' # Todos los viernes
+    - cron: '39 11 * * 5'
 
 jobs:
   analyze:
@@ -30,16 +30,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'pnpm'
+          node-version: '22.15.0'
 
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
+      - name: Install pnpm
+        run: npm install -g pnpm@latest
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -51,10 +45,9 @@ jobs:
           build-mode: manual
 
       - name: Manual build (all apps)
-        run: |
-          pnpm -r run build
+        run: pnpm -r run build
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: '/language:${{matrix.language}}'
+          category: '/language:${{ matrix.language }}'
