@@ -1,0 +1,77 @@
+services:
+  indicators-service:
+    build:
+      context: ../..
+      dockerfile: infrastructure/Dockerfile
+      target: builder
+      args:
+        APP_PATH: apps/indicators
+    container_name: indicators-service-dev
+    platform: linux/arm64
+    restart: unless-stopped
+    ports:
+      - '3021:3000'
+    env_file:
+      - ../../.env
+    environment:
+      - NODE_ENV=development
+    command: pnpm run start:dev
+    working_dir: /repo/apps/indicators
+    volumes:
+      - ../../apps/indicators:/repo/apps/indicators
+      - ../../package.json:/repo/package.json
+      - ../../pnpm-lock.yaml:/repo/pnpm-lock.yaml
+      - /repo/node_modules
+    depends_on:
+      mariadb:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    networks:
+      - internal-net
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  mariadb:
+    image: mariadb:11.7.2
+    container_name: mariadb-indicators-dev
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: indicators_data
+      MYSQL_USER: appuser
+    ports:
+      - '3321:3306'
+    volumes:
+      - mariadb-indicators-data:/var/lib/mysql
+    networks:
+      - internal-net
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis-indicators-dev
+    restart: unless-stopped
+    ports:
+      - '6321:6379'
+    networks:
+      - internal-net
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  mariadb-indicators-data:
+
+networks:
+  internal-net:
+    external: true

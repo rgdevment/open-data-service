@@ -49,6 +49,7 @@ libs/**/coverage/
 docker-compose.override.yml
 infrastructure/**/data/
 infrastructure/**/logs/
+!apps/**/docker-compose.dev.yml
 
 # ===========================
 # Make / Build Artifacts

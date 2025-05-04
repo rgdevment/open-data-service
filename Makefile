@@ -36,7 +36,7 @@ logs-prod:
 # Desarrollo
 # -------------------------
 
-up-dev: ensure-network
+up-dev: ensure-network refresh-lock
 	docker compose -f $(APP_PATH)/docker-compose.dev.yml up -d --build
 
 down-dev:
@@ -77,6 +77,9 @@ test:
 
 ensure-network:
 	sh infrastructure/network/internal-net.sh
+
+refresh-lock:
+	pnpm install --lockfile-only
 
 # -------------------------
 .PHONY: build up-prod down-prod restart-prod logs-prod \

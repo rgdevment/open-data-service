@@ -123,10 +123,6 @@ importers:
       '@libs/prometheus':
         specifier: workspace:*
         version: link:../../libs/prometheus
-    devDependencies:
-      tsc-alias:
-        specifier: ^1.8.5
-        version: 1.8.15
 
   apps/indicators:
     dependencies:
@@ -139,10 +135,6 @@ importers:
       '@libs/prometheus':
         specifier: workspace:*
         version: link:../../libs/prometheus
-    devDependencies:
-      tsc-alias:
-        specifier: ^1.8.5
-        version: 1.8.15
 
   libs/database:
     dependencies:

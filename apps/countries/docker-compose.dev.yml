@@ -1,0 +1,77 @@
+services:
+  countries-service:
+    build:
+      context: ../..
+      dockerfile: infrastructure/Dockerfile
+      target: builder
+      args:
+        APP_PATH: apps/countries
+    container_name: countries-service-dev
+    platform: linux/arm64
+    restart: unless-stopped
+    ports:
+      - '3021:3000'
+    env_file:
+      - ../../.env
+    environment:
+      - NODE_ENV=development
+    command: pnpm run start:dev
+    working_dir: /repo/apps/countries
+    volumes:
+      - ../../apps/countries:/repo/apps/countries
+      - ../../package.json:/repo/package.json
+      - ../../pnpm-lock.yaml:/repo/pnpm-lock.yaml
+      - /repo/node_modules
+    depends_on:
+      mariadb:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    networks:
+      - internal-net
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  mariadb:
+    image: mariadb:11.7.2
+    container_name: mariadb-countries-dev
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: countries_data
+      MYSQL_USER: appuser
+    ports:
+      - '3321:3306'
+    volumes:
+      - mariadb-countries-data:/var/lib/mysql
+    networks:
+      - internal-net
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis-countries-dev
+    restart: unless-stopped
+    ports:
+      - '6321:6379'
+    networks:
+      - internal-net
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  mariadb-countries-data:
+
+networks:
+  internal-net:
+    external: true
