@@ -1,0 +1,120 @@
+name: Build CI
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+
+jobs:
+  format:
+    name: Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.15'
+          cache: 'pnpm'
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting
+        run: |
+          pnpm -r exec -- echo "📦 Checking format in: $PNPM_PACKAGE_NAME"
+          pnpm -r run format:check
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.15'
+          cache: 'pnpm'
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run lint
+        run: |
+          pnpm -r exec -- echo "📦 Linting: $PNPM_PACKAGE_NAME"
+          pnpm -r run lint
+
+  test:
+    name: Tests with Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.15'
+          cache: 'pnpm'
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests with coverage
+        run: |
+          pnpm -r exec -- echo "🧪 Running tests in: $PNPM_PACKAGE_NAME"
+          pnpm -r run test:cov || pnpm -r run test
+
+      - name: Prepare coverage report for SonarQube
+        run: |
+          mkdir -p coverage/sonar
+          cp coverage/lcov.info coverage/sonar/lcov.info || echo "No lcov.info found, skipping"
+
+  sonarcloud:
+    name: SonarCloud Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.15'
+          cache: 'pnpm'
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests with coverage
+        run: pnpm -r run test:cov || pnpm -r run test
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v3
+        with:
+          args: >
+            -Dsonar.projectKey=${{ secrets.SONAR_KEY_RC }}
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.sources=.
+            -Dsonar.host.url=https://sonarcloud.io
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_RC }}
