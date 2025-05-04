@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: ['main']
   schedule:
-    - cron: '39 11 * * 5' # Viernes 11:39 UTC
+    - cron: '39 11 * * 5' # Todos los viernes
 
 jobs:
   analyze:
@@ -32,6 +32,9 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
