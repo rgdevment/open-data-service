@@ -7,24 +7,16 @@ ARG APP_PATH
 
 WORKDIR /repo
 
-# Global install
 RUN npm install -g pnpm
 
-# Copy workspace metadata
-COPY package.json pnpm-lock.yaml ./
+COPY tsconfig.base.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Copy all app and lib manifests
-COPY ${APP_PATH}/package.json ${APP_PATH}/
-COPY libs/*/package.json libs/*/
-
-# Install all deps across workspace
-RUN pnpm install --frozen-lockfile
-
-# Copy source code of all apps and libs
 COPY ${APP_PATH} ${APP_PATH}
 COPY libs libs
 
-# Build the selected app
+RUN pnpm install --frozen-lockfile
+
 WORKDIR /repo/${APP_PATH}
 RUN pnpm build
 
@@ -39,8 +31,6 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
 
 WORKDIR /app
-
-RUN npm install -g pnpm
 
 COPY --from=builder /repo/${APP_PATH}/dist ./dist
 COPY --from=builder /repo/${APP_PATH}/package.json ./

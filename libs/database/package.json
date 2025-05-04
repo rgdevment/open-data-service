@@ -4,6 +4,9 @@
   "main": "src/database.module.ts",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
   "peerDependencies": {
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.0",

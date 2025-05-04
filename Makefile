@@ -36,7 +36,7 @@ logs-prod:
 # Desarrollo
 # -------------------------
 
-up-dev: ensure-env ensure-network
+up-dev: ensure-network
 	docker compose -f $(APP_PATH)/docker-compose.dev.yml up -d --build
 
 down-dev:
@@ -77,14 +77,6 @@ test:
 
 ensure-network:
 	sh infrastructure/network/internal-net.sh
-
-ensure-env:
-	@if [ ! -f $(ENV_FILE) ]; then \
-		echo "⚠️  $(ENV_FILE) no encontrado. Copiando desde .env.example..."; \
-		cp .env.example $(ENV_FILE); \
-	else \
-		echo "✅ $(ENV_FILE) ya existe."; \
-	fi
 
 # -------------------------
 .PHONY: build up-prod down-prod restart-prod logs-prod \
