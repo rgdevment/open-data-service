@@ -42,7 +42,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
       MYSQL_DATABASE: countries_data
-      MYSQL_USER: appuser
+      MYSQL_USER: root
     ports:
       - '3321:3306'
     volumes:
