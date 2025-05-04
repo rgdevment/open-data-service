@@ -16,15 +16,10 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20.15'
-          cache: 'pnpm'
+          node-version: '22.15.0'
 
-      - name: Enable Corepack
-        run: corepack enable
-
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
+      - name: Install pnpm
+        run: npm install -g pnpm@8
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -43,15 +38,10 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20.15'
-          cache: 'pnpm'
+          node-version: '22.15.0'
 
-      - name: Enable Corepack
-        run: corepack enable
-
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
+      - name: Install pnpm
+        run: npm install -g pnpm@8
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -70,15 +60,10 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20.15'
-          cache: 'pnpm'
+          node-version: '22.15.0'
 
-      - name: Enable Corepack
-        run: corepack enable
-
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
+      - name: Install pnpm
+        run: npm install -g pnpm@8
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -104,15 +89,10 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20.15'
-          cache: 'pnpm'
+          node-version: '22.15.0'
 
-      - name: Enable Corepack
-        run: corepack enable
-
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
+      - name: Install pnpm
+        run: npm install -g pnpm@8
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
