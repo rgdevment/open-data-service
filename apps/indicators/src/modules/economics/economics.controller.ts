@@ -4,7 +4,7 @@ import { EconomicsService } from './economics.service';
 import { EconomicsEnum } from './enums/economics.enum';
 import { EconomicsParsePipe } from './validators/economics-parse.pipe';
 
-@Controller('v1/economics')
+@Controller('v1')
 export class EconomicsController {
   constructor(private readonly service: EconomicsService) {}
 
