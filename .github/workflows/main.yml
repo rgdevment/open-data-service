@@ -101,7 +101,7 @@ jobs:
         run: pnpm -r run test:cov || pnpm -r run test
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v3
+        uses: SonarSource/sonarcloud-github-action@v5
         with:
           args: >
             -Dsonar.projectKey=${{ secrets.SONAR_KEY_RC }}
