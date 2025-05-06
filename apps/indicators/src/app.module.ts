@@ -1,3 +1,4 @@
+import { RedisCacheModule } from '@libs/cache';
 import { DatabaseModule } from '@libs/database';
 import { PrometheusModule } from '@libs/prometheus';
 import { Module } from '@nestjs/common';
@@ -6,6 +7,7 @@ import { AfpModule } from './modules/afps/afp.module';
 import { CurrenciesModule } from './modules/currencies/currencies.module';
 import { EconomicsModule } from './modules/economics/economics.module';
 import { SalariesModule } from './modules/salaries/salaries.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -15,6 +17,7 @@ import { SalariesModule } from './modules/salaries/salaries.module';
     EconomicsModule,
     SalariesModule,
     AfpModule,
+    RedisCacheModule,
   ],
   controllers: [],
   providers: [],

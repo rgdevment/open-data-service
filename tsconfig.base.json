@@ -23,6 +23,7 @@
     "paths": {
       "@libs/*": ["libs/*/src"],
       "@apps/*": ["apps/*/src"]
-    }
+    },
+    "typeRoots": ["./node_modules/@types", "./types"]
   }
 }

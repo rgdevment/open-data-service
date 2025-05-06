@@ -1,3 +1,4 @@
+import { RedisCacheModule } from '@libs/cache';
 import { HealthModule } from '@libs/health';
 import { PrometheusModule } from '@libs/prometheus';
 import { Module } from '@nestjs/common';
@@ -6,7 +7,14 @@ import { DatabaseModule } from 'libs/database';
 import { CountriesModule } from './modules/countries.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), PrometheusModule, DatabaseModule, HealthModule, CountriesModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    PrometheusModule,
+    DatabaseModule,
+    HealthModule,
+    CountriesModule,
+    RedisCacheModule,
+  ],
   controllers: [],
   providers: [],
   exports: [],
