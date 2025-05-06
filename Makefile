@@ -11,6 +11,25 @@ ENV_FILE ?= $(APP_PATH)/.env
 CONTAINER ?= $(APP)-service
 
 # -------------------------
+# Stack Compartido (solo DEV)
+# -------------------------
+
+shared-dev-up:
+	docker compose -f docker-compose.dev.yml up -d
+
+shared-dev-down:
+	docker compose -f docker-compose.dev.yml down
+
+shared-dev-logs:
+	docker compose -f docker-compose.dev.yml logs -f
+
+shared-dev-ps:
+	docker compose -f docker-compose.dev.yml ps
+
+shared-dev-restart:
+	docker compose -f docker-compose.dev.yml restart
+
+# -------------------------
 # Producción
 # -------------------------
 
@@ -36,13 +55,13 @@ logs-prod:
 # Desarrollo
 # -------------------------
 
-up-dev: ensure-network refresh-lock
+up-dev: ensure-network shared-dev-up refresh-lock
 	docker compose -f $(APP_PATH)/docker-compose.dev.yml up -d --build
 
-down-dev:
+down-dev: shared-dev-down
 	docker compose -f $(APP_PATH)/docker-compose.dev.yml down
 
-restart-dev:
+restart-dev: shared-dev-restart
 	docker compose -f $(APP_PATH)/docker-compose.dev.yml restart
 
 logs-dev:
@@ -85,3 +104,4 @@ refresh-lock:
 .PHONY: build up-prod down-prod restart-prod logs-prod \
         up-dev down-dev restart-dev logs-dev ps-dev reset-db-dev \
         lint format test ensure-network ensure-env build-app
+				shared-dev-restart shared-dev-ps shared-dev-logs shared-dev-down shared-dev-up
