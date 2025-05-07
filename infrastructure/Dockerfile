@@ -18,7 +18,7 @@ COPY types types
 RUN pnpm install --frozen-lockfile
 
 WORKDIR /repo/${APP_PATH}
-RUN pnpm build
+RUN pnpm exec tsc -p tsconfig.build.json && pnpm exec tsc-alias -p tsconfig.build.json
 
 RUN echo "📁 Contenido de dist generado:" && ls -l /repo/${APP_PATH}/dist
 
