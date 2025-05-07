@@ -5,6 +5,7 @@ import { RedisCacheInterceptor } from '@libs/cache';
 import { CountriesService } from './countries.service';
 import { CountriesQueryDto } from './dto/countries-query.dto';
 import { CountryDto } from './dto/country.dto';
+import { PaginatedCountryResponseDto } from './dto/paginated-country-response.dto';
 import { PaginatedResponse } from './interfaces/pagination.interface';
 
 @ApiTags('countries')
@@ -61,7 +62,7 @@ Search for countries using a free-text query across the name, ISO code, or capit
   @ApiResponse({
     status: 200,
     description: 'Paginated list of countries matching the search query.',
-    type: CountryDto,
+    type: PaginatedCountryResponseDto,
     isArray: true,
   })
   @ApiResponse({ status: 204, description: 'No matching countries found.' })
@@ -91,7 +92,7 @@ Returns a paginated list of countries within a specified region.
   @ApiResponse({
     status: 200,
     description: 'Paginated list of countries in the specified region.',
-    type: CountryDto,
+    type: PaginatedCountryResponseDto,
     isArray: true,
   })
   @ApiResponse({ status: 204, description: 'No countries found for this region.' })
@@ -124,7 +125,7 @@ Returns a paginated list of countries within a specified subregion.
   @ApiResponse({
     status: 200,
     description: 'Paginated list of countries in the specified subregion.',
-    type: CountryDto,
+    type: PaginatedCountryResponseDto,
     isArray: true,
   })
   @ApiResponse({ status: 204, description: 'No countries found for this subregion.' })
