@@ -12,7 +12,7 @@
   },
   "packageManager": "pnpm@10.10.0",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && tsc-alias",
+    "build": "pnpm exec tsc -p tsconfig.build.json && pnpm exec tsc-alias",
     "start": "pnpm -r run start",
     "start:dev": "pnpm -r run start:dev",
     "lint": "eslint \"{apps,libs}/**/*.{ts,js}\"",
