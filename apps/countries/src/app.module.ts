@@ -1,10 +1,10 @@
 import { RedisCacheModule } from '@libs/cache';
+import { DatabaseModule } from '@libs/database';
 import { HealthModule } from '@libs/health';
 import { PrometheusModule } from '@libs/prometheus';
 import { RateLimitModule } from '@libs/rate-limit';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { DatabaseModule } from 'libs/database';
 import { CountriesModule } from './modules/countries.module';
 
 @Module({
