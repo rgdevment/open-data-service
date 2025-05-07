@@ -40,16 +40,16 @@ build:
 		--tag open-data-$(APP)
 
 up-prod:
-	docker compose -f $(APP_PATH)/docker-compose.yml up -d --build
+	docker compose -f docker-compose.yml up -d --build
 
 down-prod:
-	docker compose -f $(APP_PATH)/docker-compose.yml down
+	docker compose -f docker-compose.yml down
 
 restart-prod:
-	docker compose -f $(APP_PATH)/docker-compose.yml restart
+	docker compose -f docker-compose.yml restart
 
 logs-prod:
-	docker compose -f $(APP_PATH)/docker-compose.yml logs -f $(CONTAINER)
+	docker compose -f docker-compose.yml logs -f $(CONTAINER)
 
 # -------------------------
 # Desarrollo
@@ -83,10 +83,10 @@ deploy:
 	@git pull origin main
 
 	@echo "♻️  Rebuilding and restarting service $(APP)..."
-	docker compose -f $(APP_PATH)/docker-compose.yml up -d --build
+	docker compose -f docker-compose.yml up -d --build
 
 	@echo "📋 Logs for $(APP):"
-	docker compose -f $(APP_PATH)/docker-compose.yml logs -f $(CONTAINER)
+	docker compose -f docker-compose.yml logs -f $(CONTAINER)
 
 build-app:
 	pnpm --filter $(APP) build
