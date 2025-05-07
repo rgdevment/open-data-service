@@ -1,6 +1,6 @@
-import { DateOnlyTransform } from 'apps/indicators/src/utils/date-only.transform';
 import { Transform } from 'class-transformer';
 import { IsDateString, IsInt, IsString } from 'class-validator';
+import { DateOnlyTransform } from '../../../utils/date-only.transform';
 
 export class SalaryEntryDto {
   @IsInt()
