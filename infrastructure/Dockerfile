@@ -9,7 +9,6 @@ WORKDIR /repo
 RUN npm install -g pnpm
 
 COPY tsconfig.base.json ./
-COPY ${APP_PATH}/tsconfig.build.json ${APP_PATH}/tsconfig.build.json
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 COPY ${APP_PATH} ${APP_PATH}
