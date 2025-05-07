@@ -19,7 +19,7 @@ export class CurrenciesController {
 Recupera los valores de una divisa en Chile, incluyendo el valor actual,
 el promedio mensual y los registros más recientes disponibles.
 
-**Valores válidos**: \`DOLAR\`, \`EURO\`, \`UTM\`, \`BITCOIN\`, etc.
+**Valores válidos**: \`DOLAR\`, \`EURO\`, \`BITCOIN\`, etc.
     `,
   })
   @ApiParam({
