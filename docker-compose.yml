@@ -5,7 +5,7 @@ services:
     container_name: countries-service
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: infrastructure/Dockerfile
       args:
         APP_PATH: apps/countries
     restart: unless-stopped
@@ -40,7 +40,7 @@ services:
     container_name: indicators-service
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: infrastructure/Dockerfile
       args:
         APP_PATH: apps/indicators
     restart: unless-stopped
