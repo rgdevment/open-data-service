@@ -16,7 +16,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
           host: config.get<string>('MYSQL_HOST'),
           port: parseInt(config.get<string>('MYSQL_PORT') ?? '3306'),
           username: config.get<string>('MYSQL_USER'),
-          password: config.get<string>('MYSQL_ROOT_PASSWORD'),
+          password: config.get<string>('MYSQL_PASSWORD'),
           database: dbName,
           autoLoadEntities: true,
           relationLoadStrategy: 'query',
