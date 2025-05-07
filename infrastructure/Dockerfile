@@ -22,7 +22,7 @@ WORKDIR /repo/${APP_PATH}
 RUN pnpm build
 
 # Debug: mostrar contenido del dist central
-RUN echo "📁 Contenido de dist generado:" && ls -l /repo/dist/${APP_PATH}
+RUN echo "📁 Contenido de dist generado:" && find /repo/dist -type f
 
 # -----------------------
 # STAGE 2: Runtime
@@ -37,7 +37,7 @@ USER appuser
 WORKDIR /app
 
 # Copiamos desde el dist centralizado
-COPY --from=builder /repo/dist/${APP_PATH} ./dist
+COPY --from=builder /repo/dist ./dist
 COPY --from=builder /repo/${APP_PATH}/package.json ./
 COPY --from=builder /repo/node_modules ./node_modules
 
