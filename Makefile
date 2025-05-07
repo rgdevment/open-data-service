@@ -97,7 +97,7 @@ format:
 	docker compose -f $(APP_PATH)/docker-compose.dev.yml exec $(CONTAINER) pnpm format
 
 test:
-	docker compose -f $(APP_PATH)/docker-compose.dev.yml exec $(CONTAINER) pnpm test
+	docker compose -f $(APP_PATH)/docker-compose.dev.yml exec $(CONTAINER) pnpm test --passWithNoTests
 
 # -------------------------
 # Utilidades

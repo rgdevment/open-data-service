@@ -2,7 +2,7 @@ import { RedisCacheModule } from '@libs/cache';
 import { DatabaseModule } from '@libs/database';
 import { HealthModule } from '@libs/health';
 import { PrometheusModule } from '@libs/prometheus';
-import { RateLimitModule } from '@libs/rate-limit';
+import { SecurityModule } from '@libs/security';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { CountriesModule } from './modules/countries.module';
@@ -15,7 +15,7 @@ import { CountriesModule } from './modules/countries.module';
     HealthModule,
     CountriesModule,
     RedisCacheModule,
-    RateLimitModule,
+    SecurityModule,
   ],
   controllers: [],
   providers: [],

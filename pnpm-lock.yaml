@@ -198,7 +198,7 @@ importers:
         specifier: ^15.1.3
         version: 15.1.3
 
-  libs/rate-limit: {}
+  libs/security: {}
 
 packages:
 

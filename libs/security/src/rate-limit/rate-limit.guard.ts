@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Inject, Injectable } from '@nestjs/common';
 
 import { Cache } from 'cache-manager';
-import { TooManyRequestsException } from './exceptions/many-request.exceptions';
+import { TooManyRequestsException } from '../common/exceptions/many-request.exceptions';
 
 @Injectable()
 export class RateLimitGuard implements CanActivate {
