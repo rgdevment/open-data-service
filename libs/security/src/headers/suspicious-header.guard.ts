@@ -67,7 +67,7 @@ export class SuspiciousHeaderGuard implements CanActivate {
     return ['/health', '/metrics'].includes(path);
   }
 
-  private validateRequiredHeaders(headers: Record<string, string>, ip: string, path: string): void {
+  private validateRequiredHeaders(headers: Record<string, string>, _ip: string, _path: string): void {
     for (const key of this.requiredHeaders) {
       if (!headers[key]) {
         throw new BadRequestException(`Missing required header: ${key}`);
