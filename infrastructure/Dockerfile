@@ -9,6 +9,7 @@ WORKDIR /repo
 RUN npm install -g pnpm
 
 COPY tsconfig.base.json ./
+COPY ${APP_PATH}/tsconfig.build.json ${APP_PATH}/tsconfig.build.json
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 COPY ${APP_PATH} ${APP_PATH}
@@ -18,7 +19,7 @@ COPY types types
 RUN pnpm install --frozen-lockfile
 
 WORKDIR /repo/${APP_PATH}
-RUN pnpm exec tsc -p tsconfig.build.json && pnpm exec tsc-alias -p tsconfig.build.json
+RUN pnpm exec tsc tsconfig.build.json && pnpm exec tsc-alias tsconfig.build.json
 
 RUN echo "📁 Contenido de dist generado:" && ls -l /repo/${APP_PATH}/dist
 
