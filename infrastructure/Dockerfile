@@ -42,4 +42,4 @@ COPY --from=builder /repo/node_modules ./node_modules
 ENV NODE_ENV=production
 EXPOSE 3000
 
-CMD ["node", "dist/src/main"]
+CMD ["node", "dist/${APP_PATH}/src/main.js"]
