@@ -1,5 +1,5 @@
+import { RateLimitGuard } from '@libs/rate-limit';
 import { NestFactory } from '@nestjs/core';
-import { RateLimitGuard } from 'libs/rate-limit/src/rate-limit.guard';
 import { AppModule } from './app.module';
 
 async function bootstrap(): Promise<void> {
