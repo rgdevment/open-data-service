@@ -4,7 +4,6 @@
 FROM node:22-alpine AS builder
 
 ARG APP_PATH
-
 WORKDIR /repo
 
 RUN npm install -g pnpm
@@ -31,19 +30,19 @@ FROM node:22-alpine AS runner
 ARG APP_PATH
 ENV APP_PATH=${APP_PATH}
 
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-USER appuser
-
 WORKDIR /app
 
 COPY --from=builder /repo/${APP_PATH}/dist ./dist
 COPY --from=builder /repo/${APP_PATH}/package.json ./
 COPY --from=builder /repo/node_modules ./node_modules
+COPY infrastructure/entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
 
 ENV NODE_ENV=production
 EXPOSE 3000
 
-COPY infrastructure/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser
 
 CMD ["/entrypoint.sh"]
