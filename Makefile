@@ -51,6 +51,15 @@ restart-prod:
 logs-prod:
 	docker compose -f docker-compose.yml logs -f $(CONTAINER)
 
+deploy:
+	@echo "🔄 Pulling latest changes from origin/main..."
+	@git pull origin main
+
+	@echo "♻️  Rebuilding and restarting service for all..."
+	docker compose -f docker-compose.yml up -d --build
+
+	@echo "📋 Logs for all:"
+	docker compose -f docker-compose.yml logs --tail=50
 # -------------------------
 # Desarrollo
 # -------------------------
@@ -77,16 +86,6 @@ reset-db-dev:
 # -------------------------
 # Código
 # -------------------------
-
-deploy:
-	@echo "🔄 Pulling latest changes from origin/main..."
-	@git pull origin main
-
-	@echo "♻️  Rebuilding and restarting service $(APP)..."
-	docker compose -f docker-compose.yml up -d --build
-
-	@echo "📋 Logs for $(APP):"
-	docker compose -f docker-compose.yml logs -f $(CONTAINER)
 
 build-app:
 	pnpm --filter $(APP) build
