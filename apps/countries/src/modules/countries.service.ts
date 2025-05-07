@@ -1,26 +1,26 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CountriesRepository } from './countries.repository';
 import { CountriesQueryDto } from './dto/countries-query.dto';
-import { Country } from './entities/country.entity';
+import { CountryDto } from './dto/country.dto';
 import { PaginatedResponse } from './interfaces/pagination.interface';
 
 @Injectable()
 export class CountriesService {
   constructor(private readonly countriesRepository: CountriesRepository) {}
 
-  async getAllCountries(query: CountriesQueryDto): Promise<PaginatedResponse<Country>> {
+  async getAllCountries(query: CountriesQueryDto): Promise<PaginatedResponse<CountryDto>> {
     return this.countriesRepository.findAllWithOptions(query);
   }
 
-  async getCountryByRegion(region: string, query: CountriesQueryDto): Promise<PaginatedResponse<Country>> {
+  async getCountryByRegion(region: string, query: CountriesQueryDto): Promise<PaginatedResponse<CountryDto>> {
     return this.countriesRepository.findByRegion(region, query);
   }
 
-  async getCountryBySubregion(subregion: string, query: CountriesQueryDto): Promise<PaginatedResponse<Country>> {
+  async getCountryBySubregion(subregion: string, query: CountriesQueryDto): Promise<PaginatedResponse<CountryDto>> {
     return this.countriesRepository.findBySubregion(subregion, query);
   }
 
-  async getCountryByCapital(capital: string, query: CountriesQueryDto): Promise<Country> {
+  async getCountryByCapital(capital: string, query: CountriesQueryDto): Promise<CountryDto> {
     const result = await this.countriesRepository.findByCapital(capital, query);
     if (!result) {
       throw new NotFoundException({
@@ -30,7 +30,7 @@ export class CountriesService {
     return result;
   }
 
-  async getCountryByName(name: string, query: CountriesQueryDto): Promise<Country> {
+  async getCountryByName(name: string, query: CountriesQueryDto): Promise<CountryDto> {
     const result = await this.countriesRepository.findByName(name, query);
     if (!result) {
       throw new NotFoundException({
@@ -40,7 +40,7 @@ export class CountriesService {
     return result;
   }
 
-  async searchCountries(term: string, query: CountriesQueryDto): Promise<PaginatedResponse<Country>> {
+  async searchCountries(term: string, query: CountriesQueryDto): Promise<PaginatedResponse<CountryDto>> {
     const result = await this.countriesRepository.search(term, query);
 
     if (!result.data.length) {
