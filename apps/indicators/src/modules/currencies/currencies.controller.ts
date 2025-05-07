@@ -1,6 +1,6 @@
 import { RedisCacheInterceptor } from '@libs/cache';
 import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
-import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CurrenciesService } from './currencies.service';
 import { CurrencyResponseDto } from './dto/currency-response.dto';
 import { CurrenciesEnum } from './enums/currencies.enum';
