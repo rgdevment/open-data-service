@@ -13,6 +13,31 @@ import { PaginatedResponse } from './interfaces/pagination.interface';
 export class CountriesController {
   constructor(private readonly service: CountriesService) {}
 
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Get all countries',
+    description: `
+Retrieves data for all countries. Optionally includes states and cities.
+
+**Optional Query Parameters:**
+- \`excludeStates\`, \`excludeCities\`: Control inclusion of nested data
+- \`page\`, \`limit\`: Pagination
+    `,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Successful operation. Returns paginated list of countries.',
+    type: CountryDto,
+    isArray: true,
+  })
+  @ApiResponse({ status: 204, description: 'No countries found.' })
+  @ApiResponse({ status: 400, description: 'Invalid query parameters.' })
+  @ApiResponse({ status: 500, description: 'Internal server error.' })
+  async getAllCountries(@Query() query: CountriesQueryDto): Promise<PaginatedResponse<CountryDto>> {
+    return this.service.getAllCountries(query);
+  }
+
   @Get('search')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -44,31 +69,6 @@ Search for countries using a free-text query across the name, ISO code, or capit
   @ApiResponse({ status: 500, description: 'Internal server error.' })
   async search(@Query('q') q: string, @Query() query: CountriesQueryDto): Promise<PaginatedResponse<CountryDto>> {
     return this.service.searchCountries(q, query);
-  }
-
-  @Get()
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({
-    summary: 'Get all countries',
-    description: `
-Retrieves data for all countries. Optionally includes states and cities.
-
-**Optional Query Parameters:**
-- \`excludeStates\`, \`excludeCities\`: Control inclusion of nested data
-- \`page\`, \`limit\`: Pagination
-    `,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Successful operation. Returns paginated list of countries.',
-    type: CountryDto,
-    isArray: true,
-  })
-  @ApiResponse({ status: 204, description: 'No countries found.' })
-  @ApiResponse({ status: 400, description: 'Invalid query parameters.' })
-  @ApiResponse({ status: 500, description: 'Internal server error.' })
-  async getAllCountries(@Query() query: CountriesQueryDto): Promise<PaginatedResponse<CountryDto>> {
-    return this.service.getAllCountries(query);
   }
 
   @Get('region/:region')
