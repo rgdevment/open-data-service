@@ -55,8 +55,8 @@ deploy:
 	@echo "🔄 Pulling latest changes from origin/main..."
 	@git pull origin main
 
-	@echo "♻️  Rebuilding and restarting service for all..."
-	docker compose -f docker-compose.yml up -d --build
+	@echo "♻️  Rebuilding and restarting service for all (no cache)..."
+	docker compose -f docker-compose.yml up -d --build --no-cache
 
 	@echo "📋 Logs for all:"
 	docker compose -f docker-compose.yml logs --tail=50
