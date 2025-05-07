@@ -19,6 +19,7 @@ COPY types types
 RUN pnpm install --frozen-lockfile
 
 WORKDIR /repo/${APP_PATH}
+RUN pnpm prepare:patch
 RUN pnpm build
 
 RUN echo "📁 Contenido de dist generado:" && ls -l /repo/${APP_PATH}/dist
