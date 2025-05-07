@@ -1,5 +1,8 @@
 #!/bin/sh
 set -e
 
-echo "🚀 Starting app at: dist/$APP_PATH/src/main.js"
-exec node "dist/$APP_PATH/src/main.js"
+MAIN="dist/${APP_PATH}/src/main.js"
+
+echo "🚀 Starting app: $MAIN"
+
+exec node "$MAIN"
