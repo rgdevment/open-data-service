@@ -42,4 +42,7 @@ COPY --from=builder /repo/node_modules ./node_modules
 ENV NODE_ENV=production
 EXPOSE 3000
 
-CMD ["node", "dist/src/main.js"]
+COPY infrastructure/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+CMD ["/entrypoint.sh"]
