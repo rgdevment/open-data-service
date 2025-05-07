@@ -3,7 +3,7 @@ import { CurrenciesService } from './currencies.service';
 import { CurrencyResponseDto } from './dto/currency-response.dto';
 import { CurrenciesEnum } from './enums/currencies.enum';
 import { CurrenciesParsePipe } from './validators/currencies-parse.pipe';
-import { RedisCacheInterceptor } from 'libs/cache/src/cache.interceptor';
+import { RedisCacheInterceptor } from '@libs/cache';
 
 @Controller('v1/divisa')
 @UseInterceptors(RedisCacheInterceptor)

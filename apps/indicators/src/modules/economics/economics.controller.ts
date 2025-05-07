@@ -3,7 +3,7 @@ import { EconomicResponseDto } from './dto/economic-response.dto';
 import { EconomicsService } from './economics.service';
 import { EconomicsEnum } from './enums/economics.enum';
 import { EconomicsParsePipe } from './validators/economics-parse.pipe';
-import { RedisCacheInterceptor } from 'libs/cache/src/cache.interceptor';
+import { RedisCacheInterceptor } from '@libs/cache';
 
 @Controller('v1')
 @UseInterceptors(RedisCacheInterceptor)

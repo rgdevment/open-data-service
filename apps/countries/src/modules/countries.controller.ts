@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query, UseInterceptors } from '@nestjs/common';
-import { RedisCacheInterceptor } from 'libs/cache/src/cache.interceptor';
+import { RedisCacheInterceptor } from '@libs/cache';
 import { CountriesService } from './countries.service';
 import { CountriesQueryDto } from './dto/countries-query.dto';
 import { Country } from './entities/country.entity';
