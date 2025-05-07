@@ -1,4 +1,4 @@
-# Retrieve Countries (Legacy)
+# Retrieve Countries
 
 Retrieve Countries is an open-source REST API licensed under MIT that allows you to query data about countries, cities, and other relevant information worldwide. This API is continuously developing and growing.
 
