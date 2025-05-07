@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   countries-service:
     container_name: countries-service
