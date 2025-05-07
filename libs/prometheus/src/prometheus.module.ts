@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { createPrometheusRegistry } from './prometheus.provider';
-import { MetricsController } from './metrics.controller';
 
 @Module({
   providers: [
@@ -9,7 +8,7 @@ import { MetricsController } from './metrics.controller';
       useValue: createPrometheusRegistry(),
     },
   ],
-  controllers: [MetricsController],
+  controllers: [],
   exports: ['PrometheusRegistry'],
 })
 export class PrometheusModule {}
