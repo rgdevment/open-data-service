@@ -11,18 +11,17 @@ RUN npm install -g pnpm
 
 COPY tsconfig.base.json ./
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
 COPY ${APP_PATH} ${APP_PATH}
 COPY libs libs
 COPY types types
 
 RUN pnpm install --frozen-lockfile
 
-# Build app
 WORKDIR /repo/${APP_PATH}
 RUN pnpm build
 
-# Debug: mostrar contenido del dist central
-RUN echo "📁 Contenido de dist generado:" && find /repo/dist -type f
+RUN echo "📁 Contenido de dist generado:" && ls -l /repo/${APP_PATH}/dist
 
 # -----------------------
 # STAGE 2: Runtime
@@ -36,8 +35,7 @@ USER appuser
 
 WORKDIR /app
 
-# Copiamos desde el dist centralizado
-COPY --from=builder /repo/dist ./dist
+COPY --from=builder /repo/${APP_PATH}/dist ./dist
 COPY --from=builder /repo/${APP_PATH}/package.json ./
 COPY --from=builder /repo/node_modules ./node_modules
 
