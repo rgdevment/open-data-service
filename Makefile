@@ -78,6 +78,16 @@ reset-db-dev:
 # Código
 # -------------------------
 
+deploy:
+	@echo "🔄 Pulling latest changes from origin/main..."
+	@git pull origin main
+
+	@echo "♻️  Rebuilding and restarting service $(APP)..."
+	docker compose -f $(APP_PATH)/docker-compose.yml up -d --build
+
+	@echo "📋 Logs for $(APP):"
+	docker compose -f $(APP_PATH)/docker-compose.yml logs -f $(CONTAINER)
+
 build-app:
 	pnpm --filter $(APP) build
 
