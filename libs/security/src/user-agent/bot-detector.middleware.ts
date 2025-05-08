@@ -7,7 +7,7 @@ export class BotDetectorMiddleware implements NestMiddleware {
     const userAgent = (req.headers?.['user-agent'] ?? '').toLowerCase();
 
     // Irrelevant routes not used in an API
-    const IGNORED_EXACT_PATHS = ['/', '/favicon.ico', '/robots.txt', '/.git', '/.env'];
+    const IGNORED_EXACT_PATHS = ['/favicon.ico', '/robots.txt', '/.git', '/.env'];
 
     // user-agents bots/automatic scrapers
     const SUSPICIOUS_UAS = ['wget', 'scrapy', 'python', 'java', 'go-http-client', 'httpclient'];
