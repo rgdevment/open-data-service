@@ -1,0 +1,19 @@
+{
+  "name": "neighborly-service",
+  "version": "0.0.1",
+  "description": "REST API for Community Hub",
+  "main": "dist/main.js",
+  "scripts": {
+    "prepare:patch": "ts-patch install",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/main.js",
+    "start:dev": "ts-node-dev --respawn --exit-child -r tsconfig-paths/register --project tsconfig.build.json src/main.ts",
+    "test": "jest",
+    "test:e2e": "jest --config test/jest-e2e.json"
+  },
+  "dependencies": {
+    "@libs/database": "workspace:*",
+    "@libs/health": "workspace:*",
+    "@libs/prometheus": "workspace:*"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "../..",
+    "noEmitOnError": true,
+    "removeComments": true,
+    "incremental": false,
+    "baseUrl": "../../",
+    "paths": {
+      "@libs/*": ["libs/*/src"],
+      "@apps/*": ["apps/*/src"]
+    }
+  },
+  "exclude": ["test", "**/*.spec.ts", "**/*.test.ts", "**/*.e2e-spec.ts", "**/__tests__/**"]
+}
