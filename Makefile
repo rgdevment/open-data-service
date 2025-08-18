@@ -1,6 +1,3 @@
-# -------------------------
-# Requisitos obligatorios
-# -------------------------
 ifndef APP
 $(error ❌ Debes especificar APP=<nombre> (ej: make build APP=countries))
 endif
@@ -11,9 +8,8 @@ ENV_FILE ?= $(APP_PATH)/.env
 CONTAINER ?= $(APP)-service
 
 # -------------------------
-# Stack Compartido (solo DEV)
+# Local
 # -------------------------
-
 shared-dev-up:
 	docker compose -f docker-compose.dev.yml up -d
 
@@ -30,9 +26,8 @@ shared-dev-restart:
 	docker compose -f docker-compose.dev.yml restart
 
 # -------------------------
-# Producción
+# Production
 # -------------------------
-
 build:
 	docker build . \
 		--file infrastructure/Dockerfile \
@@ -60,10 +55,10 @@ deploy:
 
 	@echo "📋 Logs for all:"
 	docker compose -f docker-compose.yml logs --tail=50
-# -------------------------
-# Desarrollo
-# -------------------------
 
+# -------------------------
+# Development
+# -------------------------
 up-dev: ensure-network shared-dev-up refresh-lock
 	docker compose -f $(APP_PATH)/docker-compose.dev.yml up -d --build
 
@@ -84,9 +79,8 @@ reset-db-dev:
 	$(MAKE) up-dev APP=$(APP)
 
 # -------------------------
-# Código
+# Code Quality
 # -------------------------
-
 build-app:
 	pnpm --filter $(APP) build
 
@@ -100,9 +94,8 @@ test:
 	docker compose -f $(APP_PATH)/docker-compose.dev.yml exec $(CONTAINER) pnpm test --passWithNoTests
 
 # -------------------------
-# Utilidades
+# Utilities
 # -------------------------
-
 ensure-network:
 	sh infrastructure/network/internal-net.sh
 
