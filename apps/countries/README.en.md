@@ -43,16 +43,13 @@ If you want to try the project locally or set it up in your own environment, fol
 ### Installation
 
 1. Clone the repository:
-
    - git clone https://github.com/rgdevment/retrieve-countries
    - cd retrieve-countries
 
 2. Install the dependencies:
-
    - yarn install
 
 3. Set up environment variables:
-
    - cp .env.example .env
    - Edit the `.env` file with your own values.
 
@@ -79,4 +76,4 @@ Consider [becoming a sponsor](https://github.com/sponsors/rgdevment). Thank you 
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+This project is licensed under the MIT License. See the LICENSE file for more details.

@@ -6,6 +6,7 @@ import { HoneypotMiddleware } from './honeypots/honeypot.middleware';
 import { BodySizeLimiterMiddleware } from './payload-guard/body-size-limiter.middleware';
 import { RateLimitGuard } from './rate-limit/rate-limit.guard';
 import { BotDetectorMiddleware } from './user-agent/bot-detector.middleware';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   providers: [
@@ -16,6 +17,7 @@ import { BotDetectorMiddleware } from './user-agent/bot-detector.middleware';
     SuspiciousHeaderGuard,
     BodySizeLimiterMiddleware,
     HoneypotMiddleware,
+    AuthModule,
   ],
   exports: [
     BotDetectorMiddleware,
@@ -24,6 +26,7 @@ import { BotDetectorMiddleware } from './user-agent/bot-detector.middleware';
     SuspiciousHeaderGuard,
     BodySizeLimiterMiddleware,
     HoneypotMiddleware,
+    AuthModule,
   ],
 })
 export class SecurityModule {}

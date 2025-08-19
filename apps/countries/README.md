@@ -43,16 +43,13 @@ Si quieres probar el proyecto localmente o montarlo en tu propio entorno, sigue 
 ### Instalación
 
 1. Clona el repositorio:
-
    - git clone https://github.com/rgdevment/retrieve-countries
    - cd retrieve-countries
 
 2. Instala las dependencias:
-
    - yarn install
 
 3. Configura las variables de entorno:
-
    - cp .env.example .env
    - Edita el archivo `.env` con tus propios valores.
 
@@ -63,4 +60,4 @@ Este comando levantará la API en un entorno de desarrollo.
 
 ## Licencia
 
-Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.

@@ -16,15 +16,12 @@ Este proyecto proporciona una API REST gratuita y de código abierto para consul
 ### Indicadores Económicos y Financieros (Ejemplos)
 
 - **UF**: Unidad de Fomento (UF) actualizada diariamente.
-
   - GET https://indicadores.apirest.cl/v1/uf
 
 - **IPC**: Índice de Precios al Consumidor (IPC).
-
   - GET https://indicadores.apirest.cl/v1/ipc
 
 - **Dólar**: Tasa de cambio del dólar.
-
   - GET https://indicadores.apirest.cl/v1/dolar
 
 - **Salario**: Salario mínimo e histórico.
@@ -65,16 +62,13 @@ Si quieres probar el proyecto localmente o montarlo en tu propio entorno, sigue 
 ### Instalación
 
 1. Clona el repositorio:
-
    - git clone https://github.com/rgdevment/indicadores-chile.git
    - cd indicadores-chile
 
 2. Instala las dependencias:
-
    - yarn install
 
 3. Configura las variables de entorno:
-
    - cp .env.example .env
    - Edita el archivo `.env` con tus propios valores.
 
@@ -88,7 +82,6 @@ Este comando levantará la API en un entorno de desarrollo.
 Si deseas desplegar esta API en producción, sigue los siguientes pasos:
 
 1. Genera el build del proyecto:
-
    - yarn build
 
 2. Ejecuta la aplicación en producción:
@@ -98,4 +91,4 @@ El proyecto está configurado para ser desplegado automáticamente en [Google Cl
 
 ## Licencia
 
-Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.

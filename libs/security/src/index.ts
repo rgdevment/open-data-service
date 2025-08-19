@@ -5,3 +5,12 @@ export * from './payload-guard/body-size-limiter.middleware';
 export * from './rate-limit/rate-limit.guard';
 export * from './security.module';
 export * from './user-agent/bot-detector.middleware';
+
+// Auth Module
+export * from './auth/auth.module';
+export * from './auth/auth.service';
+export * from './auth/enums/role.enum';
+export * from './auth/decorators/public.decorator';
+export * from './auth/decorators/roles.decorator';
+export * from './auth/guards/jwt-auth.guard';
+export * from './auth/guards/roles.guard';
