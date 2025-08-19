@@ -9,7 +9,10 @@
   "exclude": ["node_modules", "dist"],
   "references": [
     {
-      "path": "../security"
+      "path": "../users"
+    },
+    {
+      "path": "../common"
     }
   ]
 }

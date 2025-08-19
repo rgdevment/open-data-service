@@ -6,10 +6,5 @@
     "composite": true
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist"],
-  "references": [
-    {
-      "path": "../users"
-    }
-  ]
+  "exclude": ["node_modules", "dist"]
 }

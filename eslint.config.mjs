@@ -16,7 +16,7 @@ export default tseslint.config(
         project: [
           './tsconfig.base.json',
           './apps/*/tsconfig.json',
-          './libs/*/tsconfig.json',
+          './libs/*/tsconfig.lib.json',
         ],
         tsconfigRootDir: import.meta.dirname,
         sourceType: 'module',
