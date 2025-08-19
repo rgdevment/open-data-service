@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
-import { AuthService, LocalAuthGuard, Public, Role, Roles } from '@libs/security';
+import { AuthService, LocalAuthGuard, Public, Roles } from '@libs/security';
 import { CreateUserDto, User, UsersService } from '@libs/users';
+import { Role } from '@libs/common';
 
 @Controller('v1')
 export class AppController {

@@ -8,8 +8,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { hash } from 'bcrypt';
-import { Role } from '@libs/security';
 import { DocumentType } from '../enums/document-type.enum';
+import { Role } from '@libs/common';
 
 @Entity({ name: 'users' })
 @Unique(['documentType', 'documentValue'])
