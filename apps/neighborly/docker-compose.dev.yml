@@ -10,9 +10,9 @@ services:
     platform: linux/arm64
     restart: unless-stopped
     ports:
-      - '3021:3000'
+      - '3023:3000'
     env_file:
-      - ./apps/neighborly/.env
+      - .env
     environment:
       - NODE_ENV=development
     command: pnpm run start:dev

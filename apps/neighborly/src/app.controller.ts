@@ -1,12 +1,20 @@
-import { Controller, Get, Request } from '@nestjs/common';
-import { Public, Roles, Role } from '@libs/security';
+import { Body, Controller, Get, Post, Request } from '@nestjs/common';
+import { Public, Roles, Role, AuthService } from '@libs/security';
 
-@Controller()
+@Controller('v1')
 export class AppController {
+  constructor(private readonly authService: AuthService) {}
+
   @Public()
   @Get()
   getPublicStatus(): string {
     return 'This endpoint is public. Welcome to Neighborly!';
+  }
+
+  @Public()
+  @Post('login')
+  login(@Body() body: { rut: string; id: number; roles: Role[] }): { access_token: string } {
+    return this.authService.login(body);
   }
 
   @Get('profile')
