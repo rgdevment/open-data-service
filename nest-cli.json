@@ -35,6 +35,21 @@
           }
         ]
       }
+    },
+    "neighborly": {
+      "type": "application",
+      "root": "apps/neighborly",
+      "entryFile": "src/main",
+      "sourceRoot": "apps/neighborly/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/neighborly/tsconfig.build.json",
+        "assets": [
+          {
+            "include": "src/resources/**/*",
+            "watchAssets": true
+          }
+        ]
+      }
     }
   }
 }

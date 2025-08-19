@@ -1,9 +1,13 @@
-import { Body, Controller, Get, Post, Request } from '@nestjs/common';
-import { Public, Roles, Role, AuthService } from '@libs/security';
+import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { AuthService, LocalAuthGuard, Public, Role, Roles } from '@libs/security';
+import { CreateUserDto, User, UsersService } from '@libs/users';
 
 @Controller('v1')
 export class AppController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Public()
   @Get()
@@ -12,9 +16,16 @@ export class AppController {
   }
 
   @Public()
+  @UseGuards(LocalAuthGuard)
   @Post('login')
   login(@Body() body: { rut: string; id: number; roles: Role[] }): { access_token: string } {
     return this.authService.login(body);
+  }
+
+  @Public()
+  @Post('register')
+  async register(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return await this.usersService.create(createUserDto);
   }
 
   @Get('profile')
