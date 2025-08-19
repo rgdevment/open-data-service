@@ -12,7 +12,7 @@ services:
     ports:
       - '3021:3000'
     env_file:
-      - ../../.env
+      - ./apps/neighborly/.env
     environment:
       - NODE_ENV=development
     command: pnpm run start:dev

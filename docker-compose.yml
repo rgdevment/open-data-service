@@ -78,7 +78,7 @@ services:
         APP_PATH: apps/neighborly
     restart: unless-stopped
     env_file:
-      - .env
+      - ./apps/neighborly/.env
     environment:
       - NODE_ENV=production
     expose:

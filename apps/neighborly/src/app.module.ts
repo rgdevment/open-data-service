@@ -1,25 +1,31 @@
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { RedisCacheModule } from '@libs/cache';
 import { DatabaseModule } from '@libs/database';
 import { HealthModule } from '@libs/health';
 import { PrometheusModule } from '@libs/prometheus';
-import { JwtAuthGuard, RolesGuard, SecurityModule } from '@libs/security';
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
+import {
+  BodySizeLimiterMiddleware,
+  BotDetectorMiddleware,
+  HoneypotMiddleware,
+  JwtAuthGuard,
+  RolesGuard,
+  SecurityModule,
+} from '@libs/security';
 import { AppController } from './app.controller';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: './apps/neighborly/.env.development',
+      envFilePath: '.env',
     }),
     SecurityModule,
     PrometheusModule,
     DatabaseModule,
     HealthModule,
     RedisCacheModule,
-    SecurityModule,
   ],
   controllers: [AppController],
   providers: [
@@ -32,6 +38,9 @@ import { AppController } from './app.controller';
       useClass: RolesGuard,
     },
   ],
-  exports: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(BodySizeLimiterMiddleware, BotDetectorMiddleware, HoneypotMiddleware).forRoutes('*');
+  }
+}

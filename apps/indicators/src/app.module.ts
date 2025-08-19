@@ -1,9 +1,9 @@
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { RedisCacheModule } from '@libs/cache';
 import { DatabaseModule } from '@libs/database';
 import { PrometheusModule } from '@libs/prometheus';
-import { SecurityModule } from '@libs/security';
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { SecurityModule, BodySizeLimiterMiddleware, BotDetectorMiddleware, HoneypotMiddleware } from '@libs/security';
 import { AfpModule } from './modules/afps/afp.module';
 import { CurrenciesModule } from './modules/currencies/currencies.module';
 import { EconomicsModule } from './modules/economics/economics.module';
@@ -21,8 +21,9 @@ import { SalariesModule } from './modules/salaries/salaries.module';
     RedisCacheModule,
     SecurityModule,
   ],
-  controllers: [],
-  providers: [],
-  exports: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(BodySizeLimiterMiddleware, BotDetectorMiddleware, HoneypotMiddleware).forRoutes('*');
+  }
+}
