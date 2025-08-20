@@ -1,0 +1,9 @@
+name: 'PNPM Setup'
+description: 'Sets up Node.js and installs PNPM dependencies with caching.'
+runs:
+  using: "composite"
+  steps:
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        run_install: true
