@@ -1,109 +1,123 @@
-ifndef APP
-$(error ❌ Debes especificar APP=<nombre> (ej: make build APP=countries))
-endif
+# Default App. Usage: make up-dev APP=neighborly
+APP ?= countries
+# Service names in docker-compose & Nx project names are defined as <app-name>-service
+CONTAINER = $(APP)-service
 
-APP_PATH = apps/$(APP)
-STACK_NAME = internal-net
-ENV_FILE ?= $(APP_PATH)/.env
-CONTAINER ?= $(APP)-service
+# Define compose files to avoid repetition and make commands cleaner
+COMPOSE_PROD = docker compose -f docker-compose.yml
+COMPOSE_DEV  = docker compose -f docker-compose.dev.yml
 
-# -------------------------
-# Local
-# -------------------------
-shared-dev-up:
-	docker compose -f docker-compose.dev.yml up -d
+.DEFAULT_GOAL := help
 
-shared-dev-down:
-	docker compose -f docker-compose.dev.yml down
+# =========================
+# === 🛠️ Development
+# =========================
+.PHONY: dev dev-down logs-dev restart-dev ps-dev reset-db
 
-shared-dev-logs:
-	docker compose -f docker-compose.dev.yml logs -f
+## Starts the specified app's container and shared services (db, redis)
+dev: ensure-network
+	@echo "🚀 Starting development environment for $(CONTAINER)..."
+	$(COMPOSE_DEV) up -d $(CONTAINER) mariadb redis
 
-shared-dev-ps:
-	docker compose -f docker-compose.dev.yml ps
+## Stops and removes all development containers
+dev-down:
+	@echo "Stopping all development containers..."
+	$(COMPOSE_DEV) down --remove-orphans
 
-shared-dev-restart:
-	docker compose -f docker-compose.dev.yml restart
+## Follows the logs of a specific development app container
+logs-dev:
+	$(COMPOSE_DEV) logs -f $(CONTAINER)
 
-# -------------------------
-# Production
-# -------------------------
+## Restarts a specific development app container
+restart-dev:
+	$(COMPOSE_DEV) restart $(CONTAINER)
+
+## Lists all running development containers
+ps-dev:
+	$(COMPOSE_DEV) ps
+
+## Resets the database by restarting all dev services
+reset-db:
+	$(MAKE) dev-down
+	$(MAKE) dev APP=$(APP)
+
+# =========================
+# === ✨ Code Quality
+# =========================
+.PHONY: build-app lint test format
+
+## Builds a specific app locally using Nx cache
+build-app:
+	npx nx build $(CONTAINER)
+
+## Lints a specific app or library using Nx cache
+lint:
+	npx nx lint $(CONTAINER)
+
+## Runs tests for a specific app or library using Nx cache
+test:
+	npx nx test $(CONTAINER)
+
+## Formats the entire codebase with Prettier
+format:
+	pnpm format
+
+# =========================
+# === Production
+# =========================
+.PHONY: build prod prod-down logs-prod restart-prod logs-all deploy
+
+## Builds a production-ready docker image for a specific app
 build:
 	docker build . \
-		--file infrastructure/Dockerfile \
-		--build-arg APP_PATH=$(APP_PATH) \
-		--tag open-data-$(APP)
+	 --file infrastructure/Dockerfile \
+	 --build-arg APP=$(CONTAINER) \
+	 --build-arg APP_DIR=$(APP) \
+	 --tag open-data-$(APP)
 
-up-prod:
-	docker compose -f docker-compose.yml up -d --build
+## Starts the entire production stack (all apps & services)
+prod:
+	@echo "🚀 Starting production environment..."
+	$(COMPOSE_PROD) up -d --build
 
-down-prod:
-	docker compose -f docker-compose.yml down
+## Stops and removes all production containers
+prod-down:
+	@echo "Stopping all production containers..."
+	$(COMPOSE_PROD) down --remove-orphans
 
-restart-prod:
-	docker compose -f docker-compose.yml restart
-
+## Follows the logs of a specific production app container
 logs-prod:
-	docker compose -f docker-compose.yml logs -f $(CONTAINER)
+	$(COMPOSE_PROD) logs -f $(CONTAINER)
 
+## Follows the logs of all production containers
+logs-all:
+	$(COMPOSE_PROD) logs -f
+
+## Restarts a specific production app container
+restart-prod:
+	$(COMPOSE_PROD) restart $(CONTAINER)
+
+## Pulls latest changes and redeploys the entire production stack
 deploy:
 	@echo "🔄 Pulling latest changes from origin/main..."
 	@git pull origin main
+	@echo "♻️  Rebuilding and restarting all services..."
+	$(MAKE) prod
 
-	@echo "♻️  Rebuilding and restarting service for all (no cache)..."
-	docker compose -f docker-compose.yml up -d --build
+# =========================
+# === 🧹 Utilities
+# =========================
+.PHONY: ensure-network prune help
 
-	@echo "📋 Logs for all:"
-	docker compose -f docker-compose.yml logs --tail=50
-
-# -------------------------
-# Development
-# -------------------------
-up-dev: ensure-network shared-dev-up refresh-lock
-	docker compose -f $(APP_PATH)/docker-compose.dev.yml up -d --build
-
-down-dev: shared-dev-down
-	docker compose -f $(APP_PATH)/docker-compose.dev.yml down
-
-restart-dev: shared-dev-restart
-	docker compose -f $(APP_PATH)/docker-compose.dev.yml restart
-
-logs-dev:
-	docker compose -f $(APP_PATH)/docker-compose.dev.yml logs -f $(CONTAINER)
-
-ps-dev:
-	docker compose -f $(APP_PATH)/docker-compose.dev.yml ps
-
-reset-db-dev:
-	$(MAKE) down-dev APP=$(APP)
-	$(MAKE) up-dev APP=$(APP)
-
-# -------------------------
-# Code Quality
-# -------------------------
-build-app:
-	pnpm --filter $(APP) build
-
-lint:
-	docker compose -f $(APP_PATH)/docker-compose.dev.yml exec $(CONTAINER) pnpm lint
-
-format:
-	docker compose -f $(APP_PATH)/docker-compose.dev.yml exec $(CONTAINER) pnpm format
-
-test:
-	docker compose -f $(APP_PATH)/docker-compose.dev.yml exec $(CONTAINER) pnpm test --passWithNoTests
-
-# -------------------------
-# Utilities
-# -------------------------
+## Ensures the shared docker network exists
 ensure-network:
-	sh infrastructure/network/internal-net.sh
+	@sh infrastructure/network/internal-net.sh
 
-refresh-lock:
-	pnpm install --lockfile-only
+## Forcefully removes all unused Docker data (containers, images, cache)
+prune:
+	docker system prune -a --volumes
 
-# -------------------------
-.PHONY: build up-prod down-prod restart-prod logs-prod \
-        up-dev down-dev restart-dev logs-dev ps-dev reset-db-dev \
-        lint format test ensure-network ensure-env build-app
-				shared-dev-restart shared-dev-ps shared-dev-logs shared-dev-down shared-dev-up
+## Displays this help message
+help:
+	@echo "Available commands:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'

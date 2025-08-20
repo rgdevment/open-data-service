@@ -1,108 +1,68 @@
+x-app-template: &app-template
+  restart: unless-stopped
+  environment:
+    - NODE_ENV=production
+  expose:
+    - 3000
+  networks:
+    - internal-net
+  read_only: true
+  tmpfs:
+    - /tmp
+  deploy:
+    resources:
+      limits:
+        memory: 1G
+        cpus: '1.0'
+  healthcheck:
+    test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+    interval: 30s
+    timeout: 5s
+    retries: 3
+  logging:
+    driver: 'json-file'
+    options:
+      max-size: '10m'
+      max-file: '3'
+
 services:
   countries-service:
+    # Inherit all common properties from the template
+    <<: *app-template
     container_name: countries-service
     build:
       context: .
       dockerfile: infrastructure/Dockerfile
       args:
-        APP_PATH: apps/countries
-    restart: unless-stopped
+        APP: countries-service
+        APP_DIR: countries
     env_file:
       - .env
-    environment:
-      - NODE_ENV=production
-    expose:
-      - 3000
-    networks:
-      - internal-net
-    read_only: true
-    tmpfs:
-      - /tmp
-    deploy:
-      resources:
-        limits:
-          memory: 1G
-          cpus: '1.0'
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
-      interval: 30s
-      timeout: 5s
-      retries: 3
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '10m'
-        max-file: '3'
 
   indicators-service:
+    <<: *app-template
     container_name: indicators-service
     build:
       context: .
       dockerfile: infrastructure/Dockerfile
       args:
-        APP_PATH: apps/indicators
-    restart: unless-stopped
+        APP: indicators-service
+        APP_DIR: indicators
     env_file:
       - .env
-    environment:
-      - NODE_ENV=production
-    expose:
-      - 3000
-    networks:
-      - internal-net
-    read_only: true
-    tmpfs:
-      - /tmp
-    deploy:
-      resources:
-        limits:
-          memory: 1G
-          cpus: '1.0'
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
-      interval: 30s
-      timeout: 5s
-      retries: 3
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '10m'
-        max-file: '3'
 
   neighborly-service:
+    <<: *app-template
     container_name: neighborly-service
     build:
       context: .
       dockerfile: infrastructure/Dockerfile
       args:
-        APP_PATH: apps/neighborly
-    restart: unless-stopped
+        APP: neighborly-service
+        APP_DIR: neighborly
+    # This service uses a specific .env file
     env_file:
       - ./apps/neighborly/.env
-    environment:
-      - NODE_ENV=production
-    expose:
-      - 3000
-    networks:
-      - internal-net
-    read_only: true
-    tmpfs:
-      - /tmp
-    deploy:
-      resources:
-        limits:
-          memory: 1G
-          cpus: '1.0'
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
-      interval: 30s
-      timeout: 5s
-      retries: 3
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '10m'
-        max-file: '3'
 
 networks:
   internal-net:

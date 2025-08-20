@@ -4,11 +4,17 @@
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.lib.json"
   },
   "peerDependencies": {
     "@nestjs/common": "^11.1.6",
     "@nestjs/terminus": "^11.0.0"
+  },
+  "dependencies": {
+    "@nestjs/swagger": "^11.2.0"
   }
 }

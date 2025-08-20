@@ -1,3 +1,21 @@
+# Define a reusable template for all our Node.js apps
+x-app-template: &app-template
+  image: node:22-alpine
+  restart: unless-stopped
+  working_dir: /repo
+  environment:
+    - NODE_ENV=development
+  volumes:
+    - ./:/repo
+    - /repo/node_modules
+  networks:
+    - internal-net
+  healthcheck:
+    test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+    interval: 30s
+    timeout: 5s
+    retries: 3
+
 services:
   mariadb:
     image: mariadb:11.7.2
@@ -32,6 +50,33 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+
+  neighborly-service:
+    <<: *app-template
+    container_name: neighborly-service-dev
+    env_file:
+      - ./apps/neighborly/.env
+    ports:
+      - '3023:3000'
+    command: pnpm nx serve neighborly-service
+
+  countries-service:
+    <<: *app-template
+    container_name: countries-service-dev
+    env_file:
+      - ./apps/countries/.env
+    ports:
+      - '3024:3000'
+    command: pnpm nx serve countries-service
+
+  indicators-service:
+    <<: *app-template
+    container_name: indicators-service-dev
+    env_file:
+      - ./apps/indicators/.env
+    ports:
+      - '3025:3000'
+    command: pnpm nx serve indicators-service
 
 volumes:
   mariadb-data:

@@ -21,19 +21,9 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "@libs/*": ["libs/*/src"],
-      "@apps/*": ["apps/*/src"]
+      "@apps/*": ["apps/*/src"],
+      "@libs/*": ["libs/*/dist"]
     },
-    "typeRoots": ["./node_modules/@types", "./types"],
-    "plugins": [
-      {
-        "transform": "typescript-transform-paths"
-      },
-      {
-        "transform": "typescript-transform-paths",
-        "afterDeclarations": true
-      }
-    ],
-    "tsBuildInfoFile": "./dist/.tsbuildinfo"
+    "typeRoots": ["./node_modules/@types", "./types"]
   }
 }

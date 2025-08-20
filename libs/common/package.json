@@ -3,10 +3,16 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
   "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.lib.json",
     "test": "jest"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.6"
   }
 }
