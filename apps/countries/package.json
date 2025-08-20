@@ -16,6 +16,7 @@
     "@libs/database": "workspace:*",
     "@libs/health": "workspace:*",
     "@libs/prometheus": "workspace:*",
+    "@libs/security": "workspace:*",
     "@nestjs/common": "^11.1.6",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.6",

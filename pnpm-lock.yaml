@@ -158,6 +158,9 @@ importers:
       '@libs/prometheus':
         specifier: workspace:*
         version: link:../../libs/prometheus
+      '@libs/security':
+        specifier: workspace:*
+        version: link:../../libs/security
       '@nestjs/common':
         specifier: ^11.1.6
         version: 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -194,6 +197,9 @@ importers:
       '@libs/prometheus':
         specifier: workspace:*
         version: link:../../libs/prometheus
+      '@libs/security':
+        specifier: workspace:*
+        version: link:../../libs/security
       '@nestjs/common':
         specifier: ^11.1.6
         version: 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)

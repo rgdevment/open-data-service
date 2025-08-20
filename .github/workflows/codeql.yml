@@ -10,7 +10,7 @@ on:
 
 jobs:
   analyze:
-    name: Analyze (${{ matrix.language }})
+    name: Analyze (JavaScript)
     runs-on: ubuntu-latest
     timeout-minutes: 360
     permissions:
@@ -27,16 +27,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      # Use the official pnpm action to setup Node and cache dependencies
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: '22.15.0'
-
-      - name: Install pnpm
-        run: npm install -g pnpm@latest
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+          version: 10 # Or your desired pnpm version
+          run_install: true # This command also runs `pnpm install` for you
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3

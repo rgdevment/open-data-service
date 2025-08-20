@@ -7,81 +7,46 @@ on:
     branches: ['main']
 
 jobs:
-  format:
-    name: Format Check
+  ci:
+    name: Lint, Test & Check Format
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Required for nx affected to correctly determine the base SHA
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.15.0'
+          node-version: '22.18.0'
+          cache: 'pnpm' # Use pnpm's built-in caching for faster installs
 
       - name: Install pnpm
         run: npm install -g pnpm@latest
 
-      - name: Install dependencies
+      # Install dependencies just ONCE
+      - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Check formatting
-        run: |
-          pnpm -r exec -- echo "📦 Checking format in: $PNPM_PACKAGE_NAME"
-          pnpm -r run format:check
+      # This action is crucial. It sets the BASE and HEAD SHAs for Nx to compare.
+      - uses: nx/set-shas@v4
 
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
+      # Run tasks ONLY on projects affected by the code changes
+      - name: Check Format
+        run: npx nx affected --target=format:check
 
-    steps:
-      - uses: actions/checkout@v4
+      - name: Lint Affected Projects
+        run: npx nx affected --target=lint
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22.15.0'
+      - name: Test Affected Projects
+        run: npx nx affected --target=test --coverage
 
-      - name: Install pnpm
-        run: npm install -g pnpm@latest
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run lint
-        run: |
-          pnpm -r exec -- echo "📦 Linting: $PNPM_PACKAGE_NAME"
-          pnpm -r run lint
-
-  test:
-    name: Tests with Coverage
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22.15.0'
-
-      - name: Install pnpm
-        run: npm install -g pnpm@latest
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run tests with coverage
-        run: |
-          pnpm -r exec -- echo "🧪 Running tests in: $PNPM_PACKAGE_NAME"
-          pnpm -r run test:cov || pnpm -r run test
-
-      - name: Prepare coverage report for SonarQube
-        run: |
-          mkdir -p coverage/sonar
-          cp coverage/lcov.info coverage/sonar/lcov.info || echo "No lcov.info found, skipping"
-
+  # SonarCloud can remain a separate job as it often needs to scan the whole repo
   sonarcloud:
     name: SonarCloud Scan
+    needs: ci # Run only after the main CI job succeeds
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -89,16 +54,18 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.15.0'
+          node-version: '22.18.0'
+          cache: 'pnpm'
 
       - name: Install pnpm
         run: npm install -g pnpm@latest
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run tests with coverage
-        run: pnpm -r run test:cov || pnpm -r run test
+      # We still need to generate the coverage reports for Sonar
+      - name: Run Tests with Coverage on All Projects
+        run: npx nx run-many --target=test --coverage
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v5
