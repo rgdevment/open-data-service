@@ -31,12 +31,12 @@ jobs:
         uses: ./.github/actions/pnpm-setup
 
       - name: Initialize CodeQL
-        uses: github/code-ql-action/init@v3
+        uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           build-mode: none
 
       - name: Perform CodeQL Analysis
-        uses: github/code-ql-action/analyze@v3
+        uses: github/codeql-action/analyze@v3
         with:
           category: '/language:${{ matrix.language }}'
