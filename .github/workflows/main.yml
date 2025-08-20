@@ -10,29 +10,23 @@ jobs:
   ci:
     name: Lint, Test & Check Format
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
-        with:
-          # Required for nx affected to correctly determine the base SHA
-          fetch-depth: 0
+      # Step 1: Use our reusable setup action
+      - name: Setup Environment
+        uses: ./.github/actions/pnpm-setup
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22.18.0'
-          cache: 'pnpm' # Use pnpm's built-in caching for faster installs
+      # Step 2: Set SHAs for Nx Affected
+      - name: Set Nx SHAs
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "NX_BASE=${{ github.event.pull_request.base.sha }}" >> $GITHUB_ENV
+            echo "NX_HEAD=${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
+          else
+            echo "NX_BASE=${{ github.event.before }}" >> $GITHUB_ENV
+            echo "NX_HEAD=${{ github.event.after }}" >> $GITHUB_ENV
+          fi
 
-      - name: Install pnpm
-        run: npm install -g pnpm@latest
-
-      # Install dependencies just ONCE
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-
-      # This action is crucial. It sets the BASE and HEAD SHAs for Nx to compare.
-      - uses: nx/set-shas@v4
-
-      # Run tasks ONLY on projects affected by the code changes
+      # Step 3: Run affected commands
       - name: Check Format
         run: npx nx affected --target=format:check
 
@@ -42,31 +36,20 @@ jobs:
       - name: Test Affected Projects
         run: npx nx affected --target=test --coverage
 
-  # SonarCloud can remain a separate job as it often needs to scan the whole repo
   sonarcloud:
     name: SonarCloud Scan
-    needs: ci # Run only after the main CI job succeeds
+    needs: ci
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      # Step 1: Use our reusable setup action
+      - name: Setup Environment
+        uses: ./.github/actions/pnpm-setup
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22.18.0'
-          cache: 'pnpm'
-
-      - name: Install pnpm
-        run: npm install -g pnpm@latest
-
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-
-      # We still need to generate the coverage reports for Sonar
+      # Step 2: Run tests on all projects to get full coverage report
       - name: Run Tests with Coverage on All Projects
         run: npx nx run-many --target=test --coverage
 
+      # Step 3: Run SonarCloud Scan
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v5
         with:
