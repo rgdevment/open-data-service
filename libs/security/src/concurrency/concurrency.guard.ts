@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { TooManyRequestsException } from '../common/exceptions/many-request.exceptions';
 import { ConcurrencyService } from './concurrency.service';
+import { TooManyRequestsException } from '@libs/common';
 
 @Injectable()
 export class ConcurrencyGuard implements CanActivate {
