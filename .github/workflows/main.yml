@@ -11,11 +11,14 @@ jobs:
     name: Lint, Test & Check Format
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Use our reusable setup action
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Setup Environment
         uses: ./.github/actions/pnpm-setup
 
-      # Step 2: Set SHAs for Nx Affected
       - name: Set Nx SHAs
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -26,7 +29,6 @@ jobs:
             echo "NX_HEAD=${{ github.event.after }}" >> $GITHUB_ENV
           fi
 
-      # Step 3: Run affected commands
       - name: Check Format
         run: npx nx affected --target=format:check
 
@@ -41,15 +43,17 @@ jobs:
     needs: ci
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Use our reusable setup action
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Setup Environment
         uses: ./.github/actions/pnpm-setup
 
-      # Step 2: Run tests on all projects to get full coverage report
       - name: Run Tests with Coverage on All Projects
         run: npx nx run-many --target=test --coverage
 
-      # Step 3: Run SonarCloud Scan
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v5
         with:
