@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -10,14 +13,18 @@
     "test": "jest"
   },
   "dependencies": {
+    "@libs/common": "workspace:*",
+    "@nestjs/common": "^11.1.6",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^11.1.6",
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/passport": "^11.0.5",
+    "cache-manager": "4.1.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
-    "passport-local": "^1.0.0"
+    "rxjs": "^7.8.2"
   },
   "devDependencies": {
-    "@types/passport-jwt": "^4.0.1",
-    "@types/passport-local": "^1.0.38"
+    "@types/passport-jwt": "^4.0.1"
   }
 }

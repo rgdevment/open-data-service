@@ -7,3 +7,5 @@ onlyBuiltDependencies:
   - '@scarf/scarf'
   - '@swc/core'
   - bcrypt
+  - nx
+  - unrs-resolver

@@ -1,48 +1,37 @@
 # -----------------------
-# STAGE 1: Build app
+# STAGE 1: Builder
 # -----------------------
 FROM node:22-alpine AS builder
 
-ARG APP_PATH
 WORKDIR /repo
-
 RUN npm install -g pnpm
 
-COPY tsconfig.base.json ./
-
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
-COPY ${APP_PATH} ${APP_PATH}
-COPY libs libs
-COPY types types
+COPY . .
 
 RUN pnpm install --frozen-lockfile
 
-WORKDIR /repo/${APP_PATH}
-RUN pnpm prepare:patch
-RUN pnpm build
+ARG APP
+RUN npx nx build ${APP}
+
+RUN pnpm --filter=${APP} deploy --legacy /deploy
 
 # -----------------------
-# STAGE 2: Runtime
+# STAGE 2: Final Runner
 # -----------------------
 FROM node:22-alpine AS runner
 
-ARG APP_PATH
-ENV APP_PATH=${APP_PATH}
+ENV NODE_ENV=production
 
 WORKDIR /app
 
-COPY --from=builder /repo/${APP_PATH}/dist ./dist
-COPY --from=builder /repo/${APP_PATH}/package.json ./
-COPY --from=builder /repo/node_modules ./node_modules
-COPY infrastructure/entrypoint.sh /entrypoint.sh
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
+COPY --from=builder /deploy .
+
+COPY infrastructure/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-ENV NODE_ENV=production
-EXPOSE 3000
-
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
+EXPOSE 3000
 
 CMD ["/entrypoint.sh"]

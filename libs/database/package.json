@@ -1,7 +1,11 @@
 {
   "name": "@libs/database",
   "version": "1.0.0",
-  "main": "src/database.module.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
   "private": true,
   "scripts": {

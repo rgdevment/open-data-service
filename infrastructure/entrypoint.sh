@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-MAIN="dist/${APP_PATH}/src/main.js"
+MAIN="dist/main.js"
 
 echo "🚀 Starting app: $MAIN"
 

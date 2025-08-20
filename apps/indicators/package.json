@@ -12,8 +12,17 @@
     "test:e2e": "jest --config test/jest-e2e.json"
   },
   "dependencies": {
+    "@libs/cache": "workspace:*",
     "@libs/database": "workspace:*",
-    "@libs/health": "workspace:*",
-    "@libs/prometheus": "workspace:*"
+    "@libs/prometheus": "workspace:*",
+    "@libs/security": "workspace:*",
+    "@nestjs/common": "^11.1.6",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^11.1.6",
+    "@nestjs/swagger": "^11.2.0",
+    "@nestjs/typeorm": "^11.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "typeorm": "^0.3.26"
   }
 }
