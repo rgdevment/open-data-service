@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Patch, Request } from '@nestjs/common';
+import { Controller, Post, Body, Patch, Request, HttpCode, Delete, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { RegisterDto } from '../auth/dtos/register.dto';
 import { UserEntity } from './entities/user.entity';
@@ -27,5 +27,12 @@ export class UsersController {
     const userId = req.user.id;
     await this.usersService.changeEmail(userId, changeEmailDto);
     return { message: 'Email changed successfully. Please log in again.' };
+  }
+
+  @Delete('me')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async softDeleteUser(@Request() req: any): Promise<void> {
+    const userId = req.user.id;
+    await this.usersService.softDeleteUser(userId);
   }
 }

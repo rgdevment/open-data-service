@@ -168,6 +168,41 @@ export class UsersService {
     await this.cacheService.del(`otp_attempts:${newEmail}`);
   }
 
+  async softDeleteUser(userId: string): Promise<void> {
+    await this.dataSource.transaction(async (manager) => {
+      const user = await manager.findOne(UserEntity, {
+        where: { id: userId },
+        relations: ['profile'],
+      });
+
+      if (!user) {
+        return;
+      }
+
+      const now = new Date();
+      const year = now.getFullYear().toString().slice(-2);
+      const month = (now.getMonth() + 1).toString().padStart(2, '0');
+      const day = now.getDate().toString().padStart(2, '0');
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+
+      const anonymizedSuffix = `_deleted_${year}${month}${day}${hours}${minutes}`;
+
+      const profile = user.profile;
+
+      user.email = `${user.email}${anonymizedSuffix}`;
+
+      if (profile) {
+        profile.documentValue = `${profile.documentValue}${anonymizedSuffix}`;
+        profile.deletedAt = now;
+        await manager.save(profile);
+      }
+
+      user.deletedAt = now;
+      await manager.save(user);
+    });
+  }
+
   async findOneByUsername(username: string): Promise<UserEntity | null> {
     const isUsernameAnEmail = isEmail(username);
     const isUsernameARutFormat = /^\d{1,8}-[\d|kK]$/.test(username);

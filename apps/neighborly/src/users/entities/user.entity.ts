@@ -1,6 +1,14 @@
 import { Role } from '@libs/common';
 import { User as IUser } from '@libs/users';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToOne,
+  DeleteDateColumn,
+} from 'typeorm';
 import { ProfileEntity } from './profile.entity';
 
 @Entity({ name: 'users' })
@@ -28,4 +36,7 @@ export class UserEntity implements IUser {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

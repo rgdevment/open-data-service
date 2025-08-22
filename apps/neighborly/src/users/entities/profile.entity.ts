@@ -7,6 +7,7 @@ import {
   OneToOne,
   JoinColumn,
   Index,
+  DeleteDateColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 
@@ -40,4 +41,7 @@ export class ProfileEntity {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }
