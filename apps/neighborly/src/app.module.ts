@@ -15,6 +15,7 @@ import {
 } from '@libs/security';
 import { AppController } from './app.controller';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UsersModule } from './users/users.module';
     HealthModule,
     RedisCacheModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

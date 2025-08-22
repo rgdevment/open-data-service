@@ -7,6 +7,7 @@ import { UserEntity } from './entities/user.entity';
 import { ProfileEntity } from './entities/profile.entity';
 import { DocumentType, isValidChileanRUT, Role } from '@libs/common';
 import { RegisterDto } from '../auth/dtos/register.dto';
+import { isEmail } from 'class-validator';
 
 @Injectable()
 export class UsersService {
@@ -77,11 +78,36 @@ export class UsersService {
     return completeUser;
   }
 
+  async findOneByUsername(username: string): Promise<UserEntity | null> {
+    const isUsernameAnEmail = isEmail(username);
+    const isUsernameARutFormat = /^\d{1,8}-[\d|kK]$/.test(username);
+
+    const queryBuilder = this.usersRepository.createQueryBuilder('user');
+
+    queryBuilder.leftJoinAndSelect('user.profile', 'profile').addSelect('user.password');
+
+    if (isUsernameAnEmail) {
+      queryBuilder.where('user.email = :username', { username });
+    } else if (isUsernameARutFormat) {
+      const normalizedRUT = username.toUpperCase();
+      queryBuilder
+        .innerJoin('user.profile', 'p')
+        .where('p.documentType = :documentType', { documentType: DocumentType.RUT })
+        .andWhere('p.documentValue = :documentValue', { documentValue: normalizedRUT });
+    } else {
+      return null;
+    }
+
+    return queryBuilder.getOne();
+  }
+
   async findOneByEmail(email: string): Promise<UserEntity | null> {
-    return this.usersRepository.findOne({
-      where: { email },
-      relations: ['profile'],
-    });
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.profile', 'profile')
+      .addSelect('user.password')
+      .where('user.email = :email', { email })
+      .getOne();
   }
 
   async findProfileByUserId(userId: string): Promise<ProfileEntity | null> {
