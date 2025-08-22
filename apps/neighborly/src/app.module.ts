@@ -16,6 +16,7 @@ import {
 import { AppController } from './app.controller';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { MailingModule } from '@libs/mailing';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AuthModule } from './auth/auth.module';
     DatabaseModule,
     HealthModule,
     RedisCacheModule,
+    MailingModule,
     UsersModule,
     AuthModule,
   ],

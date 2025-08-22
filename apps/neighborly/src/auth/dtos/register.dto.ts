@@ -1,8 +1,13 @@
-import { IsEnum, IsNotEmpty, IsString, Matches } from 'class-validator';
 import { CreateUserCredentialsDto } from '@libs/users';
 import { DocumentType } from '@libs/common';
+import { IsEnum, IsNotEmpty, IsString, Length, Matches } from 'class-validator';
 
 export class RegisterDto extends CreateUserCredentialsDto {
+  @IsString()
+  @Length(6, 6, { message: 'OTP must be exactly 6 characters long.' })
+  @IsNotEmpty()
+  otp!: string;
+
   @IsString()
   @IsNotEmpty()
   firstName!: string;
@@ -11,7 +16,7 @@ export class RegisterDto extends CreateUserCredentialsDto {
   @IsNotEmpty()
   lastName!: string;
 
-  @IsEnum(DocumentType, { message: 'Invalid document type.' })
+  @IsEnum(DocumentType)
   @IsNotEmpty()
   documentType!: DocumentType;
 

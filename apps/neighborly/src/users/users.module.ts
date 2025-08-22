@@ -4,9 +4,10 @@ import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { ProfileEntity } from './entities/profile.entity';
+import { RedisCacheModule } from '@libs/cache';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, ProfileEntity])],
+  imports: [TypeOrmModule.forFeature([UserEntity, ProfileEntity]), RedisCacheModule],
   providers: [UsersService],
   controllers: [UsersController],
   exports: [UsersService],

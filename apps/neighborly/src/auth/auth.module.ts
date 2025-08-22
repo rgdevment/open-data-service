@@ -4,10 +4,13 @@ import { AuthModule as SecurityAuthModule } from '@libs/security';
 import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
 import { LocalStrategy } from './strategies/local.strategy';
+import { AuthenticationService } from './auth.service';
+import { MailingModule } from '@libs/mailing';
+import { RedisCacheModule } from '@libs/cache';
 
 @Module({
-  imports: [UsersModule, PassportModule, SecurityAuthModule],
+  imports: [UsersModule, PassportModule, SecurityAuthModule, MailingModule, RedisCacheModule],
   controllers: [AuthController],
-  providers: [LocalStrategy],
+  providers: [LocalStrategy, AuthenticationService],
 })
 export class AuthModule {}

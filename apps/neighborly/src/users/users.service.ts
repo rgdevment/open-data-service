@@ -1,4 +1,10 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -8,6 +14,8 @@ import { ProfileEntity } from './entities/profile.entity';
 import { DocumentType, isValidChileanRUT, Role } from '@libs/common';
 import { RegisterDto } from '../auth/dtos/register.dto';
 import { isEmail } from 'class-validator';
+import { UpdateProfileDto } from './dtos/update-profile.dto';
+import { RedisCacheService } from '@libs/cache';
 
 @Injectable()
 export class UsersService {
@@ -17,28 +25,52 @@ export class UsersService {
     @InjectRepository(ProfileEntity)
     private readonly profilesRepository: Repository<ProfileEntity>,
     private readonly dataSource: DataSource,
+    private readonly cacheService: RedisCacheService,
   ) {}
 
   async create(registerDto: RegisterDto): Promise<UserEntity> {
-    const normalizedRUT = registerDto.documentValue.toUpperCase();
+    const { email, otp } = registerDto;
+    const otpKey = `otp:${email}`;
+    const attemptsKey = `otp_attempts:${email}`;
 
-    if (registerDto.documentType === DocumentType.RUT) {
+    const storedOtp = await this.cacheService.get<string>(otpKey);
+    const attempts = (await this.cacheService.get<number>(attemptsKey)) ?? 0;
+
+    if (!storedOtp) {
+      throw new BadRequestException('Invalid or expired OTP. Please request a new one.');
+    }
+
+    if (storedOtp !== otp) {
+      const newAttempts = attempts + 1;
+      if (newAttempts >= 3) {
+        await this.cacheService.del(otpKey);
+        await this.cacheService.del(attemptsKey);
+        throw new BadRequestException('Too many incorrect attempts. Please request a new OTP.');
+      }
+      await this.cacheService.set(attemptsKey, newAttempts, 300);
+      throw new BadRequestException('Invalid OTP. Please try again.');
+    }
+
+    await this.cacheService.del(otpKey);
+    await this.cacheService.del(attemptsKey);
+
+    const { documentValue, documentType } = registerDto;
+    const normalizedRUT = documentValue.toUpperCase();
+    if (documentType === DocumentType.RUT) {
       if (!isValidChileanRUT(normalizedRUT)) {
         throw new BadRequestException('The provided RUT is not valid.');
       }
     }
 
-    const createdUserInTransaction = await this.dataSource.transaction(async (transactionalEntityManager) => {
-      const { email, password, documentType } = registerDto;
+    const createdUserInTransaction = await this.dataSource.transaction(async (manager) => {
+      const { password } = registerDto;
 
-      const existingUser = await transactionalEntityManager.findOne(UserEntity, {
-        where: { email },
-      });
+      const existingUser = await manager.findOne(UserEntity, { where: { email } });
       if (existingUser) {
         throw new ConflictException('Email already registered');
       }
 
-      const existingProfile = await transactionalEntityManager.findOne(ProfileEntity, {
+      const existingProfile = await manager.findOne(ProfileEntity, {
         where: { documentType, documentValue: normalizedRUT },
       });
       if (existingProfile) {
@@ -46,22 +78,18 @@ export class UsersService {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-
-      const newUser = transactionalEntityManager.create(UserEntity, {
+      const newUser = manager.create(UserEntity, {
         email,
         password: hashedPassword,
         roles: [Role.USER],
       });
-
-      const newProfile = transactionalEntityManager.create(ProfileEntity, {
-        firstName: registerDto.firstName,
-        lastName: registerDto.lastName,
-        documentType: registerDto.documentType,
+      const newProfile = manager.create(ProfileEntity, {
+        ...registerDto,
         documentValue: normalizedRUT,
         user: newUser,
       });
 
-      const savedProfile = await transactionalEntityManager.save(newProfile);
+      const savedProfile = await manager.save(newProfile);
       return savedProfile.user;
     });
 
@@ -76,6 +104,30 @@ export class UsersService {
 
     delete completeUser.password;
     return completeUser;
+  }
+
+  async updateProfile(userId: string, dto: UpdateProfileDto): Promise<UserEntity> {
+    const profile = await this.profilesRepository.findOne({
+      where: { user: { id: userId } },
+    });
+
+    if (!profile) {
+      throw new NotFoundException('Profile not found.');
+    }
+
+    if (dto.firstName) {
+      profile.firstName = dto.firstName;
+    }
+    if (dto.lastName) {
+      profile.lastName = dto.lastName;
+    }
+
+    await this.profilesRepository.save(profile);
+
+    return this.usersRepository.findOneOrFail({
+      where: { id: userId },
+      relations: ['profile'],
+    });
   }
 
   async findOneByUsername(username: string): Promise<UserEntity | null> {

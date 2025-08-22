@@ -73,6 +73,15 @@
         ]
       }
     },
+    "mailing": {
+      "type": "library",
+      "root": "libs/mailing",
+      "entryFile": "index",
+      "sourceRoot": "libs/mailing/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/mailing/tsconfig.lib.json"
+      }
+    },
     "neighborly": {
       "type": "application",
       "root": "apps/neighborly",
