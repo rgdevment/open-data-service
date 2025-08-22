@@ -1,5 +1,5 @@
 # Default App. Usage: make up-dev APP=neighborly
-APP ?= countries
+APP ?= neighborly
 # Service names in docker-compose & Nx project names are defined as <app-name>-service
 CONTAINER = $(APP)-service
 

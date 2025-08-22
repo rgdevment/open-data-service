@@ -20,7 +20,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
           database: dbName,
           autoLoadEntities: true,
           relationLoadStrategy: 'query',
-          synchronize: false,
+
+          synchronize: config.get<string>('NODE_ENV') === 'development',
         };
       },
     }),
