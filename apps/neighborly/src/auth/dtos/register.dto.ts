@@ -1,5 +1,6 @@
-import { IsNotEmpty, IsString, Matches } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, Matches } from 'class-validator';
 import { CreateUserCredentialsDto } from '@libs/users';
+import { DocumentType } from '@libs/common';
 
 export class RegisterDto extends CreateUserCredentialsDto {
   @IsString()
@@ -10,9 +11,9 @@ export class RegisterDto extends CreateUserCredentialsDto {
   @IsNotEmpty()
   lastName!: string;
 
+  @IsEnum(DocumentType, { message: 'Invalid document type.' })
   @IsNotEmpty()
-  @IsString()
-  documentType!: string;
+  documentType!: DocumentType;
 
   @IsString()
   @IsNotEmpty()
