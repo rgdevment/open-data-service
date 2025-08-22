@@ -18,9 +18,14 @@
     "@libs/health": "workspace:*",
     "@libs/prometheus": "workspace:*",
     "@libs/security": "workspace:*",
+    "@libs/users": "workspace:*",
     "@nestjs/common": "^11.1.6",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.6",
-    "@nestjs/swagger": "^11.2.0"
+    "@nestjs/swagger": "^11.2.0",
+    "bcrypt": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0"
   }
 }

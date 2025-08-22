@@ -2,6 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Role } from '@libs/common'; // Assuming Role enum is in common
+
+interface JwtPayload {
+  sub: string;
+  email: string;
+  roles: Role[];
+}
+
+interface AuthenticatedUser {
+  id: string;
+  email: string;
+  roles: Role[];
+}
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -13,7 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(payload: any): { id: string; rut: string; roles: string[] } {
-    return { id: payload.sub, rut: payload.rut, roles: payload.roles };
+  validate(payload: JwtPayload): AuthenticatedUser {
+    return { id: payload.sub, email: payload.email, roles: payload.roles };
   }
 }
