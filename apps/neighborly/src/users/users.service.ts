@@ -4,6 +4,7 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
@@ -16,6 +17,7 @@ import { RegisterDto } from '../auth/dtos/register.dto';
 import { isEmail } from 'class-validator';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
 import { RedisCacheService } from '@libs/cache';
+import { ChangeEmailDto } from '../auth/dtos/change-email-request.dto';
 
 @Injectable()
 export class UsersService {
@@ -130,6 +132,42 @@ export class UsersService {
     });
   }
 
+  async changeEmail(userId: string, dto: ChangeEmailDto): Promise<void> {
+    const { newEmail, currentPassword, otp } = dto;
+
+    const otpKey = `otp:${newEmail}`;
+    const storedOtp = await this.cacheService.get<string>(otpKey);
+    if (!storedOtp || storedOtp !== otp) {
+      throw new BadRequestException('Invalid or expired OTP for the new email.');
+    }
+
+    const emailExists = await this.usersRepository.findOne({ where: { email: newEmail } });
+    if (emailExists) {
+      throw new ConflictException('New email address is already in use.');
+    }
+
+    const currentUser = await this.usersRepository
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.id = :userId', { userId })
+      .getOne();
+
+    if (!currentUser || !currentUser.password) {
+      throw new NotFoundException('User not found or password not set.');
+    }
+
+    const isPasswordMatching = await bcrypt.compare(currentPassword, currentUser.password);
+    if (!isPasswordMatching) {
+      throw new UnauthorizedException('Invalid current password.');
+    }
+
+    currentUser.email = newEmail;
+    await this.usersRepository.save(currentUser);
+
+    await this.cacheService.del(otpKey);
+    await this.cacheService.del(`otp_attempts:${newEmail}`);
+  }
+
   async findOneByUsername(username: string): Promise<UserEntity | null> {
     const isUsernameAnEmail = isEmail(username);
     const isUsernameARutFormat = /^\d{1,8}-[\d|kK]$/.test(username);
@@ -151,18 +189,5 @@ export class UsersService {
     }
 
     return queryBuilder.getOne();
-  }
-
-  async findOneByEmail(email: string): Promise<UserEntity | null> {
-    return this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.profile', 'profile')
-      .addSelect('user.password')
-      .where('user.email = :email', { email })
-      .getOne();
-  }
-
-  async findProfileByUserId(userId: string): Promise<ProfileEntity | null> {
-    return this.profilesRepository.findOne({ where: { user: { id: userId } } });
   }
 }

@@ -1,7 +1,7 @@
 import { Controller, Post, UseGuards, Request, Body } from '@nestjs/common';
 import { AuthService, LocalAuthGuard, Public, RateLimitGuard } from '@libs/security';
 import { RequestOtpDto } from './dtos/request-otp.dto';
-import { AuthenticationService } from './auth.service';
+import { AuthenticationService } from './authentication.service';
 
 @Controller('v1/auth')
 export class AuthController {
