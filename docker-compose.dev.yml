@@ -1,6 +1,7 @@
 # Define a reusable template for all our Node.js apps
 x-app-template: &app-template
   image: node:22-alpine
+  entrypoint: ""
   restart: unless-stopped
   working_dir: /repo
   environment:
@@ -58,25 +59,25 @@ services:
       - ./apps/neighborly/.env
     ports:
       - '3023:3000'
-    command: pnpm nx serve neighborly-service
+    command: sh -c "npm install -g pnpm && pnpm install && pnpm --filter neighborly-service start:dev"
 
   countries-service:
     <<: *app-template
     container_name: countries-service-dev
     env_file:
-      - ./apps/countries/.env
+      - .env
     ports:
       - '3024:3000'
-    command: pnpm nx serve countries-service
+    command: sh -c "npm install -g pnpm && pnpm install && pnpm --filter countries-service start:dev"
 
   indicators-service:
     <<: *app-template
     container_name: indicators-service-dev
     env_file:
-      - ./apps/indicators/.env
+      - .env
     ports:
       - '3025:3000'
-    command: pnpm nx serve indicators-service
+    command: sh -c "npm install -g pnpm && pnpm install && pnpm --filter indicators-service start:dev"
 
 volumes:
   mariadb-data:
