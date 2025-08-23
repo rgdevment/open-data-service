@@ -18,6 +18,7 @@ import { isEmail } from 'class-validator';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
 import { ChangeEmailDto } from '../authentication/dtos/change-email-request.dto';
 import { OtpService } from '@libs/otp';
+import { ChangePasswordDto } from './dtos/change-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -173,6 +174,28 @@ export class UsersService {
       user.deletedAt = now;
       await manager.save(user);
     });
+  }
+
+  async changePassword(userId: string, dto: ChangePasswordDto): Promise<void> {
+    const { currentPassword, newPassword } = dto;
+
+    const user = await this.usersRepository
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.id = :userId', { userId })
+      .getOne();
+
+    if (!user || !user.password) {
+      throw new NotFoundException('User not found.');
+    }
+
+    const isPasswordMatching = await bcrypt.compare(currentPassword, user.password);
+    if (!isPasswordMatching) {
+      throw new UnauthorizedException('Invalid current password.');
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await this.usersRepository.save(user);
   }
 
   async findOneByUsername(username: string): Promise<UserEntity | null> {

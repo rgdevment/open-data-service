@@ -5,6 +5,7 @@ import { UserEntity } from './entities/user.entity';
 import { Public } from '@libs/security';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
 import { ChangeEmailDto } from '../authentication/dtos/change-email-request.dto';
+import { ChangePasswordDto } from './dtos/change-password.dto';
 
 @Controller('v1/users')
 export class UsersController {
@@ -27,6 +28,17 @@ export class UsersController {
     const userId = req.user.id;
     await this.usersService.changeEmail(userId, changeEmailDto);
     return { message: 'Email changed successfully. Please log in again.' };
+  }
+
+  @Patch('me/password')
+  @HttpCode(HttpStatus.OK)
+  async changePassword(
+    @Request() req: any,
+    @Body() changePasswordDto: ChangePasswordDto,
+  ): Promise<{ message: string }> {
+    const userId = req.user.id;
+    await this.usersService.changePassword(userId, changePasswordDto);
+    return { message: 'Password changed successfully.' };
   }
 
   @Delete('me')
