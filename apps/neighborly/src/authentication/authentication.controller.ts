@@ -4,7 +4,7 @@ import { RequestOtpDto } from './dtos/request-otp.dto';
 import { AuthenticationService } from './authentication.service';
 
 @Controller('v1/auth')
-export class AuthController {
+export class AuthenticationController {
   constructor(
     private readonly authService: AuthService,
     private readonly authenticationService: AuthenticationService,
@@ -14,8 +14,8 @@ export class AuthController {
   @UseGuards(RateLimitGuard)
   @Post('otp/request')
   async requestOtp(@Body() requestOtpDto: RequestOtpDto): Promise<{ message: string }> {
-    await this.authenticationService.requestOtp(requestOtpDto.email);
-    return { message: 'OTP sent successfully' };
+    await this.authenticationService.requestOtp(requestOtpDto.email, requestOtpDto.purpose);
+    return { message: 'If the email is valid, an OTP has been sent.' };
   }
 
   @Public()

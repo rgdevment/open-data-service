@@ -12,12 +12,12 @@ import * as bcrypt from 'bcrypt';
 
 import { UserEntity } from './entities/user.entity';
 import { ProfileEntity } from './entities/profile.entity';
-import { DocumentType, isValidChileanRUT, Role } from '@libs/common';
-import { RegisterDto } from '../auth/dtos/register.dto';
+import { DocumentType, isValidChileanRUT, OtpPurpose, Role } from '@libs/common';
+import { RegisterDto } from '../authentication/dtos/register.dto';
 import { isEmail } from 'class-validator';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
-import { RedisCacheService } from '@libs/cache';
-import { ChangeEmailDto } from '../auth/dtos/change-email-request.dto';
+import { ChangeEmailDto } from '../authentication/dtos/change-email-request.dto';
+import { OtpService } from '@libs/otp';
 
 @Injectable()
 export class UsersService {
@@ -27,34 +27,13 @@ export class UsersService {
     @InjectRepository(ProfileEntity)
     private readonly profilesRepository: Repository<ProfileEntity>,
     private readonly dataSource: DataSource,
-    private readonly cacheService: RedisCacheService,
+    private readonly otpService: OtpService,
   ) {}
 
   async create(registerDto: RegisterDto): Promise<UserEntity> {
     const { email, otp } = registerDto;
-    const otpKey = `otp:${email}`;
-    const attemptsKey = `otp_attempts:${email}`;
 
-    const storedOtp = await this.cacheService.get<string>(otpKey);
-    const attempts = (await this.cacheService.get<number>(attemptsKey)) ?? 0;
-
-    if (!storedOtp) {
-      throw new BadRequestException('Invalid or expired OTP. Please request a new one.');
-    }
-
-    if (storedOtp !== otp) {
-      const newAttempts = attempts + 1;
-      if (newAttempts >= 3) {
-        await this.cacheService.del(otpKey);
-        await this.cacheService.del(attemptsKey);
-        throw new BadRequestException('Too many incorrect attempts. Please request a new OTP.');
-      }
-      await this.cacheService.set(attemptsKey, newAttempts, 300);
-      throw new BadRequestException('Invalid OTP. Please try again.');
-    }
-
-    await this.cacheService.del(otpKey);
-    await this.cacheService.del(attemptsKey);
+    await this.otpService.validateOtp(email, otp, OtpPurpose.REGISTRATION);
 
     const { documentValue, documentType } = registerDto;
     const normalizedRUT = documentValue.toUpperCase();
@@ -135,11 +114,7 @@ export class UsersService {
   async changeEmail(userId: string, dto: ChangeEmailDto): Promise<void> {
     const { newEmail, currentPassword, otp } = dto;
 
-    const otpKey = `otp:${newEmail}`;
-    const storedOtp = await this.cacheService.get<string>(otpKey);
-    if (!storedOtp || storedOtp !== otp) {
-      throw new BadRequestException('Invalid or expired OTP for the new email.');
-    }
+    await this.otpService.validateOtp(newEmail, otp, OtpPurpose.EMAIL_CHANGE);
 
     const emailExists = await this.usersRepository.findOne({ where: { email: newEmail } });
     if (emailExists) {
@@ -163,9 +138,6 @@ export class UsersService {
 
     currentUser.email = newEmail;
     await this.usersRepository.save(currentUser);
-
-    await this.cacheService.del(otpKey);
-    await this.cacheService.del(`otp_attempts:${newEmail}`);
   }
 
   async softDeleteUser(userId: string): Promise<void> {

@@ -15,7 +15,7 @@ import {
 } from '@libs/security';
 import { AppController } from './app.controller';
 import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
+import { AuthenticationModule } from './authentication/authentication.module';
 import { MailingModule } from '@libs/mailing';
 
 @Module({
@@ -30,7 +30,7 @@ import { MailingModule } from '@libs/mailing';
     RedisCacheModule,
     MailingModule,
     UsersModule,
-    AuthModule,
+    AuthenticationModule,
   ],
   controllers: [AppController],
   providers: [

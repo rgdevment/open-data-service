@@ -97,6 +97,15 @@
         ]
       }
     },
+    "otp": {
+      "type": "library",
+      "root": "libs/otp",
+      "entryFile": "index",
+      "sourceRoot": "libs/otp/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/otp/tsconfig.lib.json"
+      }
+    },
     "prometheus": {
       "type": "library",
       "root": "libs/prometheus",

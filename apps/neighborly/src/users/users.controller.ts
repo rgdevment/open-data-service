@@ -1,10 +1,10 @@
 import { Controller, Post, Body, Patch, Request, HttpCode, Delete, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { RegisterDto } from '../auth/dtos/register.dto';
+import { RegisterDto } from '../authentication/dtos/register.dto';
 import { UserEntity } from './entities/user.entity';
 import { Public } from '@libs/security';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
-import { ChangeEmailDto } from '../auth/dtos/change-email-request.dto';
+import { ChangeEmailDto } from '../authentication/dtos/change-email-request.dto';
 
 @Controller('v1/users')
 export class UsersController {

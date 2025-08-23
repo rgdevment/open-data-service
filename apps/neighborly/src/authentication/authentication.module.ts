@@ -2,15 +2,15 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { AuthModule as SecurityAuthModule } from '@libs/security';
 import { UsersModule } from '../users/users.module';
-import { AuthController } from './auth.controller';
+import { AuthenticationController } from './authentication.controller';
 import { LocalStrategy } from './strategies/local.strategy';
-import { MailingModule } from '@libs/mailing';
-import { RedisCacheModule } from '@libs/cache';
 import { AuthenticationService } from './authentication.service';
+import { OtpModule } from '@libs/otp';
+import { MailingModule } from '@libs/mailing';
 
 @Module({
-  imports: [UsersModule, PassportModule, SecurityAuthModule, MailingModule, RedisCacheModule],
-  controllers: [AuthController],
+  imports: [UsersModule, PassportModule, SecurityAuthModule, MailingModule, OtpModule],
+  controllers: [AuthenticationController],
   providers: [LocalStrategy, AuthenticationService],
 })
-export class AuthModule {}
+export class AuthenticationModule {}

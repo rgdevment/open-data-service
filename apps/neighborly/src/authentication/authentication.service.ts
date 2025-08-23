@@ -1,20 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { RedisCacheService } from '@libs/cache';
+import { OtpPurpose } from '@libs/common';
+import { OtpService } from '@libs/otp';
 import { MailingService } from '@libs/mailing';
 
 @Injectable()
 export class AuthenticationService {
   constructor(
     private readonly mailingService: MailingService,
-    private readonly cacheService: RedisCacheService,
+    private readonly otpService: OtpService,
   ) {}
 
-  async requestOtp(email: string): Promise<void> {
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const fiveMinutesInSeconds = 300;
-
-    await this.cacheService.set(`otp:${email}`, otp, fiveMinutesInSeconds);
-    await this.cacheService.set(`otp_attempts:${email}`, 0, fiveMinutesInSeconds);
+  async requestOtp(email: string, purpose: OtpPurpose): Promise<void> {
+    const otp = await this.otpService.generateAndStoreOtp(email, purpose);
 
     await this.mailingService.sendEmail({
       to: email,
