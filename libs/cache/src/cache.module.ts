@@ -1,5 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import { caching, Store } from 'cache-manager';
+import { Cache, caching, Store } from 'cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
 import { RedisCacheInterceptor } from './cache.interceptor';
 import { RedisCacheService } from './cache.service';
@@ -9,7 +9,7 @@ import { RedisCacheService } from './cache.service';
   providers: [
     {
       provide: 'CACHE_MANAGER',
-      useFactory: () => {
+      useFactory: (): Cache => {
         return caching({
           store: redisStore as Store,
           host: process.env.REDIS_HOST || 'redis',

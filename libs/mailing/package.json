@@ -9,8 +9,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "tsc -p tsconfig.lib.json",
-    "test": "jest"
+    "build": "tsc -p tsconfig.lib.json"
   },
   "dependencies": {
     "resend": "^6.0.1"
