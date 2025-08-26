@@ -9,9 +9,12 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "tsc -p tsconfig.lib.json"
+    "build": "tsc -p tsconfig.lib.json",
+    "test": "jest"
   },
   "dependencies": {
+    "@libs/common": "workspace:*",
+    "@libs/cache": "workspace:*",
     "@nestjs/common": "^11.1.6",
     "@nestjs/config": "^4.0.2"
   }
