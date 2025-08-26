@@ -7,7 +7,7 @@
     "prepare:patch": "ts-patch install",
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/main.js",
-    "start:dev": "ts-node-dev --respawn --exit-child -r tsconfig-paths/register --project tsconfig.build.json src/main.ts",
+    "start:dev": "ts-node-dev --respawn --exit-child -r tsconfig-paths/register --project tsconfig.build.json src/main.ts"
   },
   "dependencies": {
     "@libs/cache": "workspace:*",
