@@ -4,10 +4,6 @@
     "outDir": "dist",
     "rootDir": "src",
     "composite": true,
-    "paths": {
-      "@libs/common": ["../common/src/index.ts"],
-      "@libs/cache": ["../cache/src/index.ts"]
-    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"],
