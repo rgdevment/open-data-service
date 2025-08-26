@@ -6,13 +6,5 @@
     "types": ["jest", "node"],
     "composite": true
   },
-  "include": ["src/**/*.spec.ts", "src/**/*.d.ts"],
-  "references": [
-    {
-      "path": "../common/tsconfig.lib.json"
-    },
-    {
-      "path": "../cache/tsconfig.lib.json"
-    }
-  ]
+  "include": ["src/**/*.spec.ts", "src/**/*.d.ts"]
 }
