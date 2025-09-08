@@ -6,6 +6,8 @@ import { Public } from '@libs/security';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
 import { ChangeEmailDto } from '../authentication/dtos/change-email-request.dto';
 import { ChangePasswordDto } from './dtos/change-password.dto';
+import { ValidateEmailDto } from '../authentication/dtos/validate.email.dto';
+import { ValidateDocumentDto } from '../authentication/dtos/validate.document.dto';
 
 @Controller('v1/users')
 export class UsersController {
@@ -17,9 +19,23 @@ export class UsersController {
     return this.usersService.create(registerDto);
   }
 
+  @Public()
+  @Post('validate/mail')
+  @HttpCode(200)
+  async validateEmail(@Body() validateEmailDto: ValidateEmailDto): Promise<void> {
+    await this.usersService.validateEmail(validateEmailDto);
+  }
+
+  @Public()
+  @Post('validate/document')
+  @HttpCode(200)
+  async validateDocument(@Body() validateDocumentDto: ValidateDocumentDto): Promise<void> {
+    await this.usersService.validateDocument(validateDocumentDto);
+  }
+
   @Patch('me')
   updateProfile(@Request() req: any, @Body() updateProfileDto: UpdateProfileDto): Promise<UserEntity> {
-    const userId = req.user.id;
+    const userId: string = req.user.id;
     return this.usersService.updateProfile(userId, updateProfileDto);
   }
 

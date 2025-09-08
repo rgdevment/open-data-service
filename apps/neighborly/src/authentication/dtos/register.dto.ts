@@ -1,6 +1,6 @@
 import { CreateUserCredentialsDto } from '@libs/users';
-import { DocumentType } from '@libs/common';
-import { IsEnum, IsNotEmpty, IsString, Length, Matches } from 'class-validator';
+import { DocumentType, IsRut } from '@libs/common';
+import { IsEnum, IsNotEmpty, IsString, Length } from 'class-validator';
 
 export class RegisterDto extends CreateUserCredentialsDto {
   @IsString()
@@ -22,6 +22,6 @@ export class RegisterDto extends CreateUserCredentialsDto {
 
   @IsString()
   @IsNotEmpty()
-  @Matches(/^\d{1,8}-[\d|kK]$/)
+  @IsRut()
   documentValue!: string;
 }

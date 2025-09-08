@@ -4,3 +4,4 @@ export * from './enums/document-type-cl.enum';
 export * from './enums/otp-purpose.enum';
 export * from './utils/rut-validation.utils';
 export * from './exceptions/many-request.exceptions';
+export * from './validators/is-rut.decorator';

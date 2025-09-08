@@ -16,8 +16,8 @@ export class AuthenticationService {
     await this.mailingService.sendEmail({
       to: email,
       subject: `Tu código para Vecinal App: ${otp}`,
-      text: `Usa este código para registrarte: ${otp}. Expira en 5 minutos.`,
-      html: `<p>Tu código es: <strong>${otp}</strong>. Expira en 5 minutos.</p>`,
+      text: `Usa este código para registrarte: ${otp}. Expira en 10 minutos.`,
+      html: `<p>Tu código es: <strong>${otp}</strong>. Expira en 10 minutos.</p>`,
     });
   }
 }
