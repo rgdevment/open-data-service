@@ -9,7 +9,7 @@ describe('otpConfig', () => {
     const config = otpConfig();
 
     expect(config).toEqual({
-      ttl: 300,
+      ttl: 600,
       attempts: 3,
     });
   });

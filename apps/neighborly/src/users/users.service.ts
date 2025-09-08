@@ -19,6 +19,8 @@ import { UpdateProfileDto } from './dtos/update-profile.dto';
 import { ChangeEmailDto } from '../authentication/dtos/change-email-request.dto';
 import { OtpService } from '@libs/otp';
 import { ChangePasswordDto } from './dtos/change-password.dto';
+import { ValidateEmailDto } from '../authentication/dtos/validate.email.dto';
+import { ValidateDocumentDto } from '../authentication/dtos/validate.document.dto';
 
 @Injectable()
 export class UsersService {
@@ -86,6 +88,33 @@ export class UsersService {
 
     delete completeUser.password;
     return completeUser;
+  }
+
+  async validateEmail(validateEmailDto: ValidateEmailDto): Promise<UserEntity> {
+    const user = await this.usersRepository.findOne({
+      where: { email: validateEmailDto.email },
+    });
+    if (!user) {
+      throw new NotFoundException();
+    }
+    return user;
+  }
+
+  async validateDocument(validateDocumentDto: ValidateDocumentDto): Promise<UserEntity> {
+    const user = await this.usersRepository.findOne({
+      where: {
+        profile: {
+          documentValue: validateDocumentDto.documentValue,
+          documentType: validateDocumentDto.documentType,
+        },
+      },
+      relations: ['profile'],
+    });
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+    return user;
   }
 
   async updateProfile(userId: string, dto: UpdateProfileDto): Promise<UserEntity> {
