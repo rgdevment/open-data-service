@@ -96,7 +96,7 @@ export class UsersService {
       where: { email: validateEmailDto.email },
     });
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException('User with provided email not found.');
     }
     return user;
   }
@@ -113,7 +113,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException('User with provided document not found.');
     }
     return user;
   }
