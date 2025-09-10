@@ -1,8 +1,9 @@
+import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Role } from '@libs/common'; // Assuming Role enum is in common
+import { Strategy } from 'passport-jwt';
+import { Role } from '@libs/common';
 
 interface JwtPayload {
   sub: string;
@@ -16,11 +17,22 @@ interface AuthenticatedUser {
   roles: Role[];
 }
 
+const cookieExtractor = (req: Request): string | null => {
+  console.log('--- Ejecutando Cookie Extractor ---');
+  console.log('Cookies recibidas en la estrategia:', req.cookies);
+
+  let token = null;
+  if (req && req.cookies) {
+    token = req.cookies['access_token'];
+  }
+  return token;
+};
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(configService: ConfigService) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: cookieExtractor,
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_SECRET')!,
     });

@@ -1,4 +1,5 @@
-import { Controller, Post, UseGuards, Request, Body } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, Body, Res, HttpCode } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthService, LocalAuthGuard, Public, RateLimitGuard } from '@libs/security';
 import { RequestOtpDto } from './dtos/request-otp.dto';
 import { AuthenticationService } from './authentication.service';
@@ -12,6 +13,7 @@ export class AuthenticationController {
 
   @Public()
   @UseGuards(RateLimitGuard)
+  @HttpCode(200)
   @Post('otp/request')
   async requestOtp(@Body() requestOtpDto: RequestOtpDto): Promise<{ message: string }> {
     await this.authenticationService.requestOtp(requestOtpDto.email, requestOtpDto.purpose);
@@ -20,8 +22,18 @@ export class AuthenticationController {
 
   @Public()
   @UseGuards(LocalAuthGuard)
+  @HttpCode(200)
   @Post('login')
-  login(@Request() req: any): { access_token: string } {
-    return this.authService.login(req.user);
+  login(@Request() req: any, @Res({ passthrough: true }) response: Response): any {
+    const accessToken = this.authService.login(req.user);
+
+    response.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/',
+    });
+
+    return req.user;
   }
 }
