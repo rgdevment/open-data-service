@@ -8,6 +8,7 @@ import { ChangeEmailDto } from '../authentication/dtos/change-email-request.dto'
 import { ChangePasswordDto } from './dtos/change-password.dto';
 import { ValidateEmailDto } from '../authentication/dtos/validate.email.dto';
 import { ValidateDocumentDto } from '../authentication/dtos/validate.document.dto';
+import { ValidateUserDto } from '../authentication/dtos/validate.user.dto';
 
 @Controller('v1/users')
 export class UsersController {
@@ -31,6 +32,13 @@ export class UsersController {
   @HttpCode(200)
   async validateDocument(@Body() validateDocumentDto: ValidateDocumentDto): Promise<void> {
     await this.usersService.validateDocument(validateDocumentDto);
+  }
+
+  @Public()
+  @Post('validate/user')
+  @HttpCode(200)
+  async validateUser(@Body() validateUserDto: ValidateUserDto): Promise<void> {
+    await this.usersService.validateUserByEmailOrDocument(validateUserDto);
   }
 
   @Patch('me')

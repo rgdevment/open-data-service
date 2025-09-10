@@ -21,6 +21,7 @@ import { OtpService } from '@libs/otp';
 import { ChangePasswordDto } from './dtos/change-password.dto';
 import { ValidateEmailDto } from '../authentication/dtos/validate.email.dto';
 import { ValidateDocumentDto } from '../authentication/dtos/validate.document.dto';
+import { ValidateUserDto } from '../authentication/dtos/validate.user.dto';
 
 @Injectable()
 export class UsersService {
@@ -114,6 +115,29 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException();
     }
+    return user;
+  }
+
+  async validateUserByEmailOrDocument(validateUserDto: ValidateUserDto): Promise<UserEntity> {
+    const { email, documentValue, documentType } = validateUserDto;
+
+    const user = await this.usersRepository.findOne({
+      where: [
+        { email: email },
+        {
+          profile: {
+            documentValue: documentValue,
+            documentType: documentType,
+          },
+        },
+      ],
+      relations: ['profile'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('User with provided email or document not found.');
+    }
+
     return user;
   }
 
