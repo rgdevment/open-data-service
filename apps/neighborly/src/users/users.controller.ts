@@ -1,46 +1,15 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Patch, Post, Request } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Patch, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { RegisterDto } from '../authentication/dtos/register.dto';
 import { UserEntity } from './entities/user.entity';
-import { Public, Roles } from '@libs/security';
+import { Roles } from '@libs/security';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
 import { ChangeEmailDto } from '../authentication/dtos/change-email-request.dto';
 import { ChangePasswordDto } from './dtos/change-password.dto';
-import { ValidateEmailDto } from '../authentication/dtos/validate.email.dto';
-import { ValidateDocumentDto } from '../authentication/dtos/validate.document.dto';
-import { ValidateUserDto } from '../authentication/dtos/validate.user.dto';
 import { Role } from '@libs/common';
 
 @Controller('v1/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Public()
-  @Post('register')
-  create(@Body() registerDto: RegisterDto): Promise<UserEntity> {
-    return this.usersService.create(registerDto);
-  }
-
-  @Public()
-  @Post('validate/mail')
-  @HttpCode(200)
-  async validateEmail(@Body() validateEmailDto: ValidateEmailDto): Promise<void> {
-    await this.usersService.validateEmail(validateEmailDto);
-  }
-
-  @Public()
-  @Post('validate/document')
-  @HttpCode(200)
-  async validateDocument(@Body() validateDocumentDto: ValidateDocumentDto): Promise<void> {
-    await this.usersService.validateDocument(validateDocumentDto);
-  }
-
-  @Public()
-  @Post('validate')
-  @HttpCode(200)
-  async validateUser(@Body() validateUserDto: ValidateUserDto): Promise<void> {
-    await this.usersService.validateUserByEmailOrDocument(validateUserDto);
-  }
 
   @Get('me')
   async getProfile(@Request() req: any): Promise<UserEntity | null> {

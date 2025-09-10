@@ -7,9 +7,19 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { AuthenticationService } from './authentication.service';
 import { OtpModule } from '@libs/otp';
 import { MailingModule } from '@libs/mailing';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from '../users/entities/user.entity';
+import { ProfileEntity } from '../users/entities/profile.entity';
 
 @Module({
-  imports: [UsersModule, PassportModule, SecurityAuthModule, MailingModule, OtpModule],
+  imports: [
+    TypeOrmModule.forFeature([UserEntity, ProfileEntity]),
+    UsersModule,
+    PassportModule,
+    SecurityAuthModule,
+    MailingModule,
+    OtpModule,
+  ],
   controllers: [AuthenticationController],
   providers: [LocalStrategy, AuthenticationService],
 })
