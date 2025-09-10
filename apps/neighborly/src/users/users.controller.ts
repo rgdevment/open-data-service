@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Patch, Request, HttpCode, Delete, HttpStatus, Get } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Patch, Post, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { RegisterDto } from '../authentication/dtos/register.dto';
 import { UserEntity } from './entities/user.entity';
@@ -43,12 +43,9 @@ export class UsersController {
   }
 
   @Get('me')
-  getProfile(@Request() req: any): any {
-    console.log('Cookies recibidas en el controlador:', req.cookies);
-    return {
-      message: 'This is a protected route for authenticated users.',
-      user: req.user,
-    };
+  async getProfile(@Request() req: any): Promise<UserEntity | null> {
+    const userId = req.user.id;
+    return await this.usersService.findOneByIdWithProfile(userId);
   }
 
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)

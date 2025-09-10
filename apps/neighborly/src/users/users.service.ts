@@ -251,7 +251,20 @@ export class UsersService {
     await this.usersRepository.save(user);
   }
 
-  async findOneByUsername(username: string): Promise<UserEntity | null> {
+  async findOneByIdWithProfile(id: string): Promise<UserEntity> {
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      relations: ['profile'],
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return user;
+  }
+
+  async findOneByUsernameWithPassword(username: string): Promise<UserEntity | null> {
     const isUsernameAnEmail = isEmail(username);
     const isUsernameARutFormat = /^\d{1,8}-[\d|kK]$/.test(username);
 
