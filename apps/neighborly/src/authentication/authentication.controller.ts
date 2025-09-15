@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Request, Body, Res, HttpCode } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, Body, Res, HttpCode, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService, LocalAuthGuard, Public, RateLimitGuard } from '@libs/security';
 import { RequestOtpDto } from './dtos/request-otp.dto';
@@ -51,5 +51,18 @@ export class AuthenticationController {
     });
 
     return req.user;
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  logout(@Res({ passthrough: true }) response: Response): { message: string } {
+    response.clearCookie('access_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/',
+    });
+
+    return { message: 'Successfully logged out' };
   }
 }
